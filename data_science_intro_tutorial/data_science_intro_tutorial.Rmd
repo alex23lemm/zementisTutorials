@@ -1,0 +1,98 @@
+---
+title: "Demystifying Machine Learning - Training Exercises"
+author: Alexander Lemm
+output: tutor::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(tutor)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+# R Introduction
+
+Before we get started, you need to know a little bit about R and its underlying principles. R is a *functional programming language* in contrast to Java which is object-oriented and which most of you use on a daily basis. Usually, when you work with R, you use a functional programming style.
+
+Functional languages make a lot of sense when you have a more or less fixed set of *things*, and as your code evolves, you primarily add new operations on existing things. For instance, R comes with 20 types of objects that represent the basic building blocks for data analysis. Surprisingly, those 20 objects are all you need for getting things done when analyzing data.
+
+When you develop new stuff with a functional mindset you typically start by thinking about what your function should do. Next, you think about what objects get passed into the function as arguments and finally, you think about what objects are returned by the function.
+
+When looking at code you can spot the difference between the two programming styles as follows: In an object-oriented language you would call a method of an object using the "dot" notation: *object.function(argument)*. In contrast, in a functional programming language the call would look as follows *function(object, argument)*.
+
+In this course we will primarily deal with the following two object types: *
+data frames* and *atomic vectors*.
+
+A *data frame* is used for storing data tables.Just think of it as being a single Excel sheet. In R speech a data frame is a list of vectors of equal length. Continuing with the Excel analogy the sheet's columns are the vectors. 
+
+The *atomic vector* is the simplest R data type. Atomic vectors are linear vectors of a single primitive type. The four common types of atomic vectors are logical, integer, double, and character. Individual numbers or strings, which are scalars in other languages, are actually vectors of length one in R.
+
+
+
+
+# Tutor intro
+
+This is an interactive R tutorial. R code chunks can be made into exercises by adding the `exercise=TRUE` chunk option. By default, R code within exercise chunks is not pre-evaluated, however you can change this behavior using the `exercise.eval` chunk option.
+
+Be sure to add a chunk label to all of your interactive chunks (e.g. `two-plus-two` and `add-function` in the sample exercises below). This provides a unique identifier for interactive components which is used for restoring progress, recording work, etc.
+
+## Exercise 1
+
+*Here's a simple exercise with an empty code chunk provided for entering the answer.*
+
+Write the R code required to add two plus two:
+
+```{r two-plus-two, exercise=TRUE}
+
+```
+
+## Exercise 2
+
+*Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
+
+Now write a function that adds any two numbers and then call it:
+
+```{r add-function, exercise=TRUE, exercise.lines = 5}
+add <- function() {
+  
+}
+```
+
+## Exercise 3
+
+*Here's an exercise where the chunk is pre-evaulated via the `exercise.eval` option (so the user can see the default output we'd like them to customize). We also add a "hint" to the correct solution via the chunk immediate below labeled `print-limit-hint`.*
+
+Modify the following code to limit the number of rows printed to 5:
+
+```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
+mtcars
+```
+
+```{r print-limit-hint}
+head(mtcars)
+```
+
+## Quiz
+
+*You can include any number of single or multiple choice questions as a quiz. Use the `question` function to define a question and the `quiz` function for grouping multiple questions together.*
+
+Some questions to verify that you understand the purposes of various base and recommended R packages:
+
+```{r quiz}
+quiz(
+  question("Which package contains functions for installing other R packages?",
+    answer("base"),
+    answer("tools"),
+    answer("utils", correct = TRUE),
+    answer("codetools")
+  ),
+  question("Which of the R packages listed below are used to create plots?",
+    answer("lattice", correct = TRUE),
+    answer("tools"),
+    answer("stats"),
+    answer("grid", correct = TRUE)
+  )
+)
+```
+
