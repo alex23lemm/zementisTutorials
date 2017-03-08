@@ -7,6 +7,7 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 library(tutor)
+tutor_options(exercise.completion = TRUE)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -21,78 +22,124 @@ When you develop new stuff with a functional mindset you typically start by thin
 
 When looking at code you can spot the difference between the two programming styles as follows: In an object-oriented language you would call a method of an object using the "dot" notation: *object.function(argument)*. In contrast, in a functional programming language the call would look as follows *function(object, argument)*.
 
-In this course we will primarily deal with the following two object types: *
-data frames* and *atomic vectors*.
+In this course we will primarily deal with the following two object types: *data frames* and *atomic vectors*.
 
-A *data frame* is used for storing data tables.Just think of it as being a single Excel sheet. In R speech a data frame is a list of vectors of equal length. Continuing with the Excel analogy the sheet's columns are the vectors. 
+A *data frame* is used for storing data tables. Just think of it as being a single Excel sheet. In R speech a data frame is a list of vectors of equal length. Continuing with the Excel analogy the sheet's columns are the vectors. 
 
 The *atomic vector* is the simplest R data type. Atomic vectors are linear vectors of a single primitive type. The four common types of atomic vectors are logical, integer, double, and character. Individual numbers or strings, which are scalars in other languages, are actually vectors of length one in R.
 
 
-
-
-# Tutor intro
-
-This is an interactive R tutorial. R code chunks can be made into exercises by adding the `exercise=TRUE` chunk option. By default, R code within exercise chunks is not pre-evaluated, however you can change this behavior using the `exercise.eval` chunk option.
-
-Be sure to add a chunk label to all of your interactive chunks (e.g. `two-plus-two` and `add-function` in the sample exercises below). This provides a unique identifier for interactive components which is used for restoring progress, recording work, etc.
+But enough theory for now, time to practice. In the following exercises you will learn some basic R commands to explore data frames and vectors in detail. 
 
 ## Exercise 1
 
-*Here's a simple exercise with an empty code chunk provided for entering the answer.*
+Every R session comes with a bunch of datasets which are directly available even though the user didn't load them explicitly into memory. We will take advantage of that fact and take a closer look at the `mtcars` dataset. The dataset was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and aspects of automobile design and performance for serveral automobiles (1973–74 models).
 
-Write the R code required to add two plus two:
+In the console below type `mtcars` and hit CTRL + Enter or click on the green 'Run Code' button. This will print the content of the dataset to the console. 
 
-```{r two-plus-two, exercise=TRUE}
+```{r mtcars-print, exercise=TRUE}
+
 
 ```
 
 ## Exercise 2
 
-*Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
+Check out the class of the mtcars object by typing `class(mtcars)`
 
-Now write a function that adds any two numbers and then call it:
+```{r mtcars-class, exercise=TRUE}
 
-```{r add-function, exercise=TRUE, exercise.lines = 5}
-add <- function() {
-  
-}
+
 ```
+
+```{r mtcars-class-quiz}
+
+question("What is the class of the mtcars object?",
+    answer("numeric vector"),
+    answer("list"),
+    answer("data frame", correct = TRUE),
+    answer("matrix"),
+    allow_retry = TRUE
+  )
+
+
+```
+
+
+
 
 ## Exercise 3
 
-*Here's an exercise where the chunk is pre-evaulated via the `exercise.eval` option (so the user can see the default output we'd like them to customize). We also add a "hint" to the correct solution via the chunk immediate below labeled `print-limit-hint`.*
+Usually, you would not print the entire content of a data frame to the console like you did it in exercise 1. Instead, you would use the `head()` and `tail()` function to get a first glimpse on the data. By default, they return the first and respectively last 6 rows of a data frame. Try out both functions with the `mtcars` data frame below. 
 
-Modify the following code to limit the number of rows printed to 5:
+```{r mtcars-head, exercise=TRUE}
 
-```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
-mtcars
+
 ```
 
-```{r print-limit-hint}
-head(mtcars)
+## Exercise 4
+
+To get some information about the data frame's dimensions you can use `nrow`, `ncol`, and `dim()`. Before trying out all three functions in the console below, think a few seconds about them. What do you expect them to return?
+
+```{r mtcars-dim, exercise=TRUE}
+
+
 ```
 
-## Quiz
+```{r mtcars-dim-quiz}
 
-*You can include any number of single or multiple choice questions as a quiz. Use the `question` function to define a question and the `quiz` function for grouping multiple questions together.*
-
-Some questions to verify that you understand the purposes of various base and recommended R packages:
-
-```{r quiz}
-quiz(
-  question("Which package contains functions for installing other R packages?",
-    answer("base"),
-    answer("tools"),
-    answer("utils", correct = TRUE),
-    answer("codetools")
-  ),
-  question("Which of the R packages listed below are used to create plots?",
-    answer("lattice", correct = TRUE),
-    answer("tools"),
-    answer("stats"),
-    answer("grid", correct = TRUE)
+question("Of how many rows and columns does the mtcars data frame consist of",
+    answer("11 columns and 32 rows"),
+    answer("12 rows and 31 columns"),
+    answer("32 rows and 11 columns", correct = TRUE)
   )
-)
+
+
 ```
+
+
+## Exercise 5
+
+One or perhaps THE most important function in R is `str()` which shows you the structure of an object. Try it out with the `mtcars` data frame.
+
+```{r mtcars-str, exercise=TRUE}
+
+
+```
+
+`str()` returns a brief description of the data: 
+
+* The object's class
+* The object's dimensionality
+* a list of names of the columns including their type and their primary values 
+
+
+
+## Exercise 6
+
+You can access an individual column of a specific data frame object, for instance named `my_data_frame`, using the `$` operator: `my_data_frame$desired_column`. 
+
+In the console below execute `mtcars$mpg`. After that type `mtcars$` and hit 'tab'. This will show you all available columns of the data frame. Select 2-3 different columns and print their content to the console
+
+
+```{r mtcars-dollar, exercise=TRUE}
+mtcars$mpg
+
+```
+ 
+
+## Excercise 7
+
+If you like to assign a data frame column's content to a new variable you have to type the following: `new_vector <- my_data_frame$column_name`. Yes, your eyes didn't trick you. Instead of `=`, R uses `<-` as its assignment operator.
+
+In the console below we give you a small example. Go ahead and execute the code. Afterwards, assign the the cylinder column to a new variable `my_cyl` and print it to the console. Compare this output with `mtcars$cyl`.
+
+```{r mtcars-assignment, exercise=TRUE}
+my_mpg <- mtcars$mpg
+
+```
+
+
+
+
+
 
