@@ -3,7 +3,6 @@ title: "Demystifying Machine Learning - Training Exercises"
 author: Alexander Lemm
 output: 
   tutor::tutorial:
-    toc_float: true
 runtime: shiny_prerendered
 ---
 
@@ -11,13 +10,16 @@ runtime: shiny_prerendered
 library(tutor)
 tutor_options(exercise.completion = TRUE)
 knitr::opts_chunk$set(echo = FALSE)
+
 ```
+## Overview
 
-This course will give you a hands-on introduction to the typcial steps of the data science process. Leveraging real-life credit data we will show you how to import, clean and explore data. Moreover, we will teach you how to model credit risk by using decision trees in R.  
+This course will give you a hands-on introduction to the typical steps of the data science process. Leveraging real-life credit data we will show you how to import, clean and explore data. Moreover, we will teach you how to model credit risk by using decision trees in R.  
 
 
+## R Introduction
 
-# R Introduction
+### FP vs OOP
 
 Before we get started, you need to know a little bit about R and its underlying principles. R is a *functional programming language* in contrast to Java which is object-oriented and which most of you use on a daily basis. Usually, when you work with R, you use a functional programming style.
 
@@ -36,9 +38,9 @@ The *atomic vector* is the simplest R data type. Atomic vectors are linear vecto
 But enough theory for now, time to practice. In the following exercises you will learn some basic R commands to explore data frames and vectors in detail. 
 
 
-## Exercises
+### Exercises
 
-### Exercise 1
+#### Exercise 1
 
 Every R session comes with a bunch of data sets which are directly available even though the user didn't load them explicitly into memory. We will take advantage of that fact and take a closer look at the `mtcars` data set. The data set was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and aspects of automobile design and performance for several automobiles (1973–74 models).
 
@@ -50,7 +52,7 @@ In the console below type `mtcars` and hit CTRL + Enter or click on the green 'R
 ```
 
 
-### Exercise 2
+#### Exercise 2
 
 Check out the class of the mtcars object by typing `class(mtcars)`
 
@@ -73,7 +75,7 @@ question("What is the class of the mtcars object?",
 ```
 
 
-### Exercise 3
+#### Exercise 3
 
 Usually, you would not print the entire content of a data frame to the console like you did it in exercise 1. Instead, you would use the `head()` and `tail()` function to get a first glimpse on the data. By default, they return the first and respectively last 6 rows of a data frame. Try out both functions with the `mtcars` data frame below. 
 
@@ -83,7 +85,7 @@ Usually, you would not print the entire content of a data frame to the console l
 ```
 
 
-### Exercise 4
+#### Exercise 4
 
 To get some information about the data frame's dimensions you can use `nrow`, `ncol`, and `dim()`. Before trying out all three functions in the console below, think a few seconds about them. What do you expect them to return?
 
@@ -104,7 +106,7 @@ question("Of how many rows and columns does the mtcars data frame consist?",
 ```
 
 
-### Exercise 5
+#### Exercise 5
 
 One or perhaps THE most important function in R is `str()` which shows you the structure of an object. Try it out with the `mtcars` data frame.
 
@@ -120,7 +122,7 @@ One or perhaps THE most important function in R is `str()` which shows you the s
 * a list of names of the columns including their type and their primary values 
 
 
-### Exercise 6
+#### Exercise 6
 
 You can access an individual column of a specific data frame object, for instance named `my_data_frame`, using the `$` operator: `my_data_frame$desired_column`. 
 
@@ -133,7 +135,7 @@ mtcars$mpg
 ```
  
 
-### Exercise 7
+#### Exercise 7
 
 If you like to assign a data frame column's content to a new variable you have to type the following: `new_vector <- my_data_frame$column_name`. Yes, your eyes didn't trick you. Instead of `=`, R uses `<-` as its assignment operator.
 
@@ -157,31 +159,89 @@ question("What are the last 3 values of my_cyl when printing it to the console?"
 ```
 
 
+## Problem Introduction
+
+### Some theory about credit risk modeling
+
+Modeling credit risk for both personal and company loans/credits is of major importance for banks. Credit risk modeling is all about the event of loan default: the situation a client fails to reimburse all or parts of the loan/credit.
+
+When a bank lends loan to a borrower, it usually transfers the entire amount of the loan to the borrower. Afterwards, the borrower will reimburse this loan amount in smaller chunks including same interest payments over time. There is a certain risk that a borrower will not fully reimburse his loan which results in a loss for the bank.
+
+The components of expected loss (EL) for a bank consists of 3 parts:
+
+* *Probability of default (PD)*: The probability a borrower will fail to fully reimburse his loan
+* *Exposure at default (EAD)*:  Amount of loan which still needs to be repaid at time of default
+* *Loss given default (LGD)*:  Amount of the loss at default expressed as percentage of the EAD
+
+The expected loss is calculated by multiplying all three measurements: EL = PD x EAD x LGD.
+
+In this course, however, we will only concentrate on the *probability of default (PD)*.
+
+### Introducing the data
+
+Banks keep information on the default behavior of past clients which can be used to predict defaults for new clients. This client information consists of two different types of information:
+
+* Application information
+    * Income
+    * Marital status
+    * ...
+* Behavioral information (tracks past behavior of the client)
+    * Payment arrears in account history 
+    * Spending history
+    * ...
 
 
-# Problem Introduction
+The data of past clients which we will use in the remainder of the course to create Machine Learning models to predict the probability of default for new clients looks as follows:
 
-Modeling credit risk for both personal and company loans is of major importance for banks. The probability that a debtor will default is a key component in getting to a measure for credit risk. While introducing other models in this course as well, we focus on two model types that are often used in the credit scoring context; logistic regression and decision trees. We will teach you how to use them in this particular context, and how these models are evaluated by banks.
 
-Contains information on past loans. Each line respresents one customer and his information along with the loan status indicator (`loan_status`) which equals 1 if the customer defaulted and 0 if the customer did not default. `loan status` will be used a the response variable. All other variables will be used as the explanatory variables:
+```{r}
+
+head(readRDS("./www/loan_data_ch1.rds"), 10)
+
+```
+
+
+The data set contains information on past loans. Each line represents one customer and his information along with the loan status indicator (`loan_status`) which equals 1 if the customer defaulted and 0 if the customer did not default. The other variables are as follows:
 
 * `loan_amnt`: Amount of the loan
 * `int_rate`: Interest rate
-* bureau score, A (highest credit worthiness) - G (lowest credit worthiness)
-* `empl_length`: Emplolyment length
+* `grade`: Bureau score reflecting credit risk history; A (highest credit worthiness) - G (lowest credit worthiness)
+* `empl_length`: Employment length
 * `home_ownership`: Home ownership status
-* `annual inc`: Annual income
+* `annual_inc`: Annual income
 * `age`: Age
 
 
+### Exercises
 
-# Importing Data
+#### Exercise 1
 
-Right at the beginning you need to import your data into R. Otherwise you would not be able to do data science on it. Typcially, that means that you import the data from a database, a file or from a web API into a data frame in R.
+```{r crm-behavioral}
+
+question("Which is the only behavioral variable in the dataset?",
+         answer("int_rate"),
+         answer("grade", correct = TRUE),
+         answer("annual_inc"),
+         answer("age")
+         )
+
+```
+
+
+
+
+## Importing Data
+
+### Different ways to import data
+
+Right at the beginning you need to import your data into R. Otherwise you would not be able to do data science on it. Typically, that means that you import the data from a database, a file or from a web API into a data frame in R.
 
 The simplest case is obviously importing data from a file. When data is stored in a .csv file you can use the `read.csv()` function to import it. The first argument to `read.csv()` is the name of the file including an absolute or relative path to it.
 
-## Exercise 1
+
+### Excerises
+
+#### Exercise 1
 
 Import `./www/loan_data.csv` and store it in a variable `loan_data`.
 
@@ -194,9 +254,9 @@ loan_data <- read.csv("./www/loan_data.csv")
 
 ```
 
-## Exercise 2
+#### Exercise 2
 
-Use the console below to get your answers to the questions of the following quiz levaraging the functions you just learned about the section "R Introduction" (`str`, `head`, etc.). 
+Use the console below to get your answers to the questions of the following quiz leveraging the functions you just learned about the section "R Introduction" (`str`, `head`, etc.). 
 
 ```{r check-out-loan-data, exercise=TRUE}
 
@@ -242,22 +302,22 @@ quiz(caption = "Quiz: Examining loan data",
 ```
 
 
-# Cleaning Data
+## Cleaning Data
 
-# Exploring Data
+## Exploring Data
 
-# Modeling Data
+## Modeling Data
 
-## Some Machine Learning Theory 
+### Some Machine Learning Theory 
 
 
 supervised learning 
 
-respponse variable
+response variable
 
 explanatory variables
 
 
 
-# Evaluating Data
+## Evaluating Data
 
