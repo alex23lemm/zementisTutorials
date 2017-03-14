@@ -8,8 +8,14 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 library(tutor)
+library(magrittr)
+library(httr)
+
+
 tutor_options(exercise.completion = TRUE)
 knitr::opts_chunk$set(echo = FALSE)
+source("global.r")
+
 
 ```
 ## Overview
@@ -165,7 +171,7 @@ question("What are the last 3 values of my_cyl when printing it to the console?"
 
 Modeling credit risk for both personal and company loans/credits is of major importance for banks. Credit risk modeling is all about the event of loan default: the situation a client fails to reimburse all or parts of the loan/credit.
 
-When a bank lends loan to a borrower, it usually transfers the entire amount of the loan to the borrower. Afterwards, the borrower will reimburse this loan amount in smaller chunks including same interest payments over time. There is a certain risk that a borrower will not fully reimburse his loan which results in a loss for the bank.
+When a bank lends loan to a borrower, it usually transfers the entire amount of the loan to the borrower. Afterwards, the borrower will reimburse this loan amount in smaller chunks including some interest payments over time. There is a certain risk that a borrower will not fully reimburse his loan which results in a loss for the bank.
 
 The components of expected loss (EL) for a bank consists of 3 parts:
 
@@ -196,7 +202,7 @@ The data of past clients which we will use in the remainder of the course to cre
 
 ```{r}
 
-head(readRDS("./www/loan_data_ch1.rds"), 10)
+head(readRDS("./www/loan_data_raw.rds"), 10)
 
 ```
 
@@ -241,22 +247,13 @@ The simplest case is obviously importing data from a file. When data is stored i
 
 ### Excerises
 
+
 #### Exercise 1
 
-Import `./www/loan_data.csv` and store it in a variable `loan_data`.
 
-```{r import-data, exercise=TRUE}
+We already loaded the complete raw loan data set for you into memory and stored in the variable `loan_data_raw`. So you don't need to execute `read.csv()` yourself. 
 
-```
-
-```{r import-data-hint}
-loan_data <- read.csv("./www/loan_data.csv")
-
-```
-
-#### Exercise 2
-
-Use the console below to get your answers to the questions of the following quiz leveraging the functions you just learned about the section "R Introduction" (`str`, `head`, etc.). 
+Use the console below to get your answers to the questions of the following quiz leveraging the functions you just learned about in section "R Introduction" (`str`, `head`, etc.). 
 
 ```{r check-out-loan-data, exercise=TRUE}
 
@@ -270,7 +267,7 @@ quiz(caption = "Quiz: Examining loan data",
               answer("8"),
               answer("19829"),
               answer("42"),
-              answer("29091", correct = TRUE)
+              answer("29092", correct = TRUE)
      ),
      question("How many variables are stored in loan_data?",
               answer("19829"),
@@ -302,6 +299,104 @@ quiz(caption = "Quiz: Examining loan data",
 ```
 
 
+#### Exercise 2 (Importing data easy is...)
+
+OK, in the following 3 exercises we just gonna have some fun using the Star Wars REST API (http://swapi.co) to download some data directly from the web. This is just a little demo to show you that data scientists may also leverage any kind of web API to gather and analyze data.
+
+```{r prepare-sw-api, warning=FALSE, message=FALSE}
+
+parse_sw_people <- function(x) {
+  x %>% httr::content(as = "text") %>% 
+    jsonlite::fromJSON() %>% 
+    .[["results"]] %>% 
+    .[, 1:8] %>% 
+    dplyr::mutate(
+      height = as.numeric(height),
+      mass = as.numeric(mass)
+    )
+}
+
+people <- GET("http://swapi.co/api/people/") %>% parse_sw_people
+
+```
+
+The code below will download and parse some Star Wars character related data from the web. Execute it and inspect the `people` variable afterwards.
+
+
+```{r sw-api-people, exercise=TRUE, exercise.setup = "prepare-sw-api", warning=FALSE, message=FALSE}
+
+people <- GET("http://swapi.co/api/people/") %>% parse_sw_people
+
+```
+
+```{r sw-bmi-people-quiz}
+
+question("Information of how many characters is stored in the people data frame?",
+    answer("9"),
+    answer("18"),
+    answer("10", correct = TRUE)
+  )
+
+
+```
+
+
+
+#### Excercise 3
+
+Imagine you are a data scientist interested in the Body Mass Index (BMI) of Star Wars characters. With the data you just downloaded you now can calculate the BMI and directly add it as a new column to the existing `people` data frame. 
+
+In general, the BMI is calculated as follows: bmi = (mass in kg) / ((height in m)^2). 
+
+Fortunately, the math operators in R look exactly the same as in the formula above. Execute the code below and check out the `sw_bmi` vector. 
+
+
+```{r sw-api-bmi, exercise=TRUE, exercise.setup = "prepare-sw.api"}
+
+sw_bmi <- people$mass / ((people$height/100)^2)
+
+
+```
+
+The command above calculated the BMI for each character based on the two columns `mass` and `height`. This command worked because R most functions are "vectorized".
+
+```{r sw-bmi-vector-quiz}
+
+question("What is the second value in the sw_bmi vector?",
+    answer("26.02758"),
+    answer("26.89232", correct = TRUE),
+    answer("25.08286")
+  )
+
+
+```
+
+#### Exercise 4
+
+We now can add the `sw_bmi` vector as a new column to the data frame `people` using the `$` operator and the `<-` assignment operator.
+
+In the console below type `people$bmi <- sw_bmi` and inspect the entire data fame `people`. Can you explain what the commands you just executed did?
+
+
+```{r sw-api-new_column, exercise=TRUE, exercise.setup = "prepare-sw.api"}
+
+
+```
+
+
+```{r sw-bmi-quiz}
+
+question("What is Darth Vader's BMI?",
+    answer("34.00999"),
+    answer("26.02758"),
+    answer("33.33007", correct = TRUE)
+  )
+
+
+```
+
+
+
 ## Cleaning Data
 
 ## Exploring Data
@@ -317,7 +412,14 @@ response variable
 
 explanatory variables
 
+### Decision trees introduction
+
+
+### Decision tress in R
+
 
 
 ## Evaluating Data
+
+One simple model vs base line model
 
