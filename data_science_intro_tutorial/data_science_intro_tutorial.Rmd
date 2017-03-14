@@ -318,6 +318,8 @@ parse_sw_people <- function(x) {
 
 people <- GET("http://swapi.co/api/people/") %>% parse_sw_people
 
+sw_bmi <- people$mass / ((people$height/100)^2)
+
 ```
 
 The code below will download and parse some Star Wars character related data from the web. Execute it and inspect the `people` variable afterwards.
@@ -331,7 +333,7 @@ people <- GET("http://swapi.co/api/people/") %>% parse_sw_people
 
 ```{r sw-bmi-people-quiz}
 
-question("Information of how many characters is stored in the people data frame?",
+question("Information on how many characters is stored in the people data frame?",
     answer("9"),
     answer("18"),
     answer("10", correct = TRUE)
@@ -351,14 +353,14 @@ In general, the BMI is calculated as follows: bmi = (mass in kg) / ((height in m
 Fortunately, the math operators in R look exactly the same as in the formula above. Execute the code below and check out the `sw_bmi` vector. 
 
 
-```{r sw-api-bmi, exercise=TRUE, exercise.setup = "prepare-sw.api"}
+```{r sw-api-bmi, exercise=TRUE, exercise.setup = "prepare-sw-api"}
 
 sw_bmi <- people$mass / ((people$height/100)^2)
 
 
 ```
 
-The command above calculated the BMI for each character based on the two columns `mass` and `height`. This command worked because R most functions are "vectorized".
+The command above calculated the BMI for each character based on the two columns `mass` and `height`. This command worked because in R most functions are "vectorized".
 
 ```{r sw-bmi-vector-quiz}
 
@@ -378,7 +380,7 @@ We now can add the `sw_bmi` vector as a new column to the data frame `people` us
 In the console below type `people$bmi <- sw_bmi` and inspect the entire data fame `people`. Can you explain what the commands you just executed did?
 
 
-```{r sw-api-new_column, exercise=TRUE, exercise.setup = "prepare-sw.api"}
+```{r sw-api-new_column, exercise=TRUE, exercise.setup = "prepare-sw-api"}
 
 
 ```
@@ -395,11 +397,9 @@ question("What is Darth Vader's BMI?",
 
 ```
 
-
-
-## Cleaning Data
-
 ## Exploring Data
+
+## Transforming Data
 
 ## Modeling Data
 
