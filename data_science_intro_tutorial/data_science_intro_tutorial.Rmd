@@ -18,9 +18,10 @@ source("global.r")
 
 
 ```
+
 ## Overview
 
-This course will give you a hands-on introduction to the typical steps of the data science process. Leveraging real-life credit data we will show you how to import, clean and explore data. Moreover, we will teach you how to model credit risk by using decision trees in R.  
+This course will give you a hands-on introduction to the typical steps of the data science process. Leveraging real-life credit data we will show you how to import, clean and explore data. Moreover, we will teach you how to model credit risk by using decision trees and random forests in R.  
 
 
 ## R Introduction
@@ -93,7 +94,7 @@ Usually, you would not print the entire content of a data frame to the console l
 
 #### Exercise 4
 
-To get some information about the data frame's dimensions you can use `nrow`, `ncol`, and `dim()`. Before trying out all three functions in the console below, think a few seconds about them. What do you expect them to return?
+To get some information about the data frame's dimensions you can use `nrow()`, `ncol()`, and `dim()`. Before trying out all three functions in the console below, think a few seconds about them. What do you expect them to return?
 
 ```{r mtcars-dim, exercise=TRUE}
 
@@ -244,6 +245,8 @@ Right at the beginning you need to import your data into R. Otherwise you would 
 
 The simplest case is obviously importing data from a file. When data is stored in a .csv file you can use the `read.csv()` function to import it. The first argument to `read.csv()` is the name of the file including an absolute or relative path to it.
 
+Right after importing the data you need to check if the import was successful. 
+
 
 ### Excerises
 
@@ -350,12 +353,11 @@ Imagine you are a data scientist interested in the Body Mass Index (BMI) of Star
 
 In general, the BMI is calculated as follows: bmi = (mass in kg) / ((height in m)^2). 
 
-Fortunately, the math operators in R look exactly the same as in the formula above. Execute the code below and check out the `sw_bmi` vector. 
+Fortunately, the math operators in R look exactly the same as in the formula above ("/", "^"). Execute the following code snippet in the console below: `people$mass / ((people$height / 100)^2)` and assign the results to the variable `sw_bmi`. Check out the `sw_bmi` variable afterwards. 
 
 
 ```{r sw-api-bmi, exercise=TRUE, exercise.setup = "prepare-sw-api"}
 
-sw_bmi <- people$mass / ((people$height/100)^2)
 
 
 ```
@@ -377,7 +379,7 @@ question("What is the second value in the sw_bmi vector?",
 
 We now can add the `sw_bmi` vector as a new column to the data frame `people` using the `$` operator and the `<-` assignment operator.
 
-In the console below type `people$bmi <- sw_bmi` and inspect the entire data fame `people`. Can you explain what the commands you just executed did?
+In the console below type `people$bmi <- sw_bmi` and inspect the entire data frame `people`. Can you explain what the commands you just executed did?
 
 
 ```{r sw-api-new_column, exercise=TRUE, exercise.setup = "prepare-sw-api"}
@@ -399,7 +401,61 @@ question("What is Darth Vader's BMI?",
 
 ## Exploring Data
 
+
+Typically, the first step in data analysis is exploring the data using **graphical techniques** and **simple descriptive statistics**. Analysts also call this task exploratory data analysis (EDA for short). EDA is not a formal process with a strict set of rules but a very creative process which can vary a lot from dataset to dataset. 
+
+As an analyst you try to achieve to following in the EDA:
+
+* Develop a general understanding and "feeling" of your data
+* Identify potential problems such as missing values and outliers
+* Identify possible new features (feature engineering)
+* Identify possible transformations
+
+Acutally, the easiest way to develop this "feeling" for your data is to use questions to lead your investigation. At the beginning of EDA you should feel free to investigate every idea and every question that comes to your mind. Some of these ideas will turn out all right, and probably a lot will be dead ends. The more questions you ask yourself the more quality questions you end up with. Each additional question that you ask will give you new insights.
+
+There is no guideline or rule set about which questions you should ask to guide your research. However, the following types of questions are always a good starter for making discoveries within your data:
+
+* What type of variation occurs within my variables?
+* What is the relationship between my variables and what type of covariation occurs between them?
+
+
+
+### View the structure of loan_data
+str(loan_data)
+
+
+### Call table() on loan_status
+table(loan_data$loan_status)
+
+### Call prop.table(table()) on loan_status
+prop.table(table(loan_data$loan_status))
+
+
+### Call table() on grade and loan_status
+
+
+prop.table(table(loan_data_raw$loan_status, loan_data_raw$grade), margin = 2)
+
+
+
+
+
+
 ## Transforming Data
+
+Goal: Fully pre-process data so that it can go into modeling.
+Remark: All of those steps always need to be replicated later for completely new data when we would like to make predictions. 
+
+There a three basic options to deal with missing values in the data:
+
+* Delete rows/columns
+* Keep values
+* Replace values
+
+
+
+
+
 
 ## Modeling Data
 
