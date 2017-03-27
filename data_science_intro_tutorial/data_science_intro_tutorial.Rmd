@@ -402,7 +402,7 @@ question("What is Darth Vader's BMI?",
 ## Exploring Data
 
 
-Typically, the first step in data analysis is exploring the data using **graphical techniques** and **simple descriptive statistics**. Analysts also call this task exploratory data analysis (EDA for short). EDA is not a formal process with a strict set of rules but a very creative process which can vary a lot from dataset to dataset. 
+Typically, the first step in data analysis is exploring the data using **simple descriptive statistics** and **graphical techniques**. Analysts also call this task exploratory data analysis (EDA for short). EDA is not a formal process with a strict set of rules but a very creative process which can vary a lot from data set to data set. 
 
 As an analyst you try to achieve to following in the EDA:
 
@@ -411,7 +411,7 @@ As an analyst you try to achieve to following in the EDA:
 * Identify possible new features (feature engineering)
 * Identify possible transformations
 
-Acutally, the easiest way to develop this "feeling" for your data is to use questions to lead your investigation. At the beginning of EDA you should feel free to investigate every idea and every question that comes to your mind. Some of these ideas will turn out all right, and probably a lot will be dead ends. The more questions you ask yourself the more quality questions you end up with. Each additional question that you ask will give you new insights.
+Actually, the easiest way to develop this "feeling" for your data is to use questions to lead your investigation. At the beginning of EDA you should feel free to investigate every idea and every question that comes to your mind. Some of these ideas will turn out all right, and probably a lot will be dead ends. The more questions you ask yourself the more quality questions you end up with. Each additional question that you ask will give you new insights.
 
 There is no guideline or rule set about which questions you should ask to guide your research. However, the following types of questions are always a good starter for making discoveries within your data:
 
@@ -420,25 +420,145 @@ There is no guideline or rule set about which questions you should ask to guide 
 
 
 
-### View the structure of loan_data
-str(loan_data)
+### Excerises
 
 
-### Call table() on loan_status
-table(loan_data$loan_status)
+#### Exercise 1
 
-### Call prop.table(table()) on loan_status
-prop.table(table(loan_data$loan_status))
+The workhorse function to retrieve many descriptive statistics in one go from a data frame (and also from other R objects) is `summary()`. It is usually the first function you apply when starting EDA. For numeric columns `summary()` returns five stats (Minimum, 1st quartile, median, 3rd quartile, maximum) and for categorical columns it returns either an excerpt or the complete frequency table. 
 
+Please use `summary()` to start your EDA on `loan_data_raw` in the console below.
 
-### Call table() on grade and loan_status
-
-
-prop.table(table(loan_data_raw$loan_status, loan_data_raw$grade), margin = 2)
+```{r eda-summary, exercise=TRUE}
 
 
+```
 
 
+```{r eda-summary-quiz}
+
+quiz(caption = "Quiz: Using summary()",
+     question("What is the minimum interest rate the bank used in the past?",
+              answer("7.90"),
+              answer("5.42", correct = TRUE),
+              answer("10.99")
+     ),
+     question("What is strange when looking at the age variable?",
+              answer("The youngest person who applied for a loan was 20 years old"),
+              answer("The oldest person who applied for a loan was 144 years old", correct = TRUE),
+              answer("The median age is 26 years")
+     ),
+     question("How many loan applicants owned property?",
+              answer("2301", correct = TRUE),
+              answer("12002"),
+              answer("14692")
+     )
+)
+
+```
+
+### Excercise 2
+
+`table()` is an extremely useful function when used with categorical data. It returns a frequency table of counts. For instance, the `home_owenership` and the `grade` columns are categorical variables in our data set. 
+
+Apply `table()` on the `grade` column and remember the `$` operator which lets you select specific columns from a data frame.
+
+
+```{r eda-table-one, exercise=TRUE}
+
+
+```
+
+```{r eda-table-one-quiz}
+
+question("How many applicants had a credit score less or equal to F?",
+              answer("211"),
+              answer("267", correct = TRUE),
+              answer("56")
+     )
+
+```
+
+
+### Exercise 3
+
+When used with more than one categorical vector, `table()` returns a frequency table at each combination of the respective input levels. You just need to pass several categorical vectors to the function separated by a comma (`table(vector1, vector2)`). 
+
+Below we would like to investigate the relationship between `grade` and `home_ownership`. Complete the command accordingly by adding the `home_ownership` variable to the `table()` function. 
+
+```{r eda-table-two, exercise=TRUE}
+
+table(loan_data_raw$grade) 
+
+
+```
+
+
+```{r eda-table-two-quiz}
+
+question("How many applicants house owners and had a credit score of 'D' when applying for their loan?",
+              answer("434"),
+              answer("1884"),
+              answer("250", correct = TRUE)
+     )
+
+```
+
+
+### Exercise 4
+
+There is one other important categorical variable in our data set: `loan_status`. If you look at the `summary()` output from exercise 1 again, it is not directly clear that `loan_status` is a categorical variable because all 5 stats for numeric variables are shown in the output. However, unlike R we know that `loan_status` only can have values "0" and "1" ("0" if the customer paid back the loan, "1" if he defaulted), so you can pass it to `table()`.
+
+Besides the absolute counts returned by `table` an analyst might rather be interested in the proportions. You can achieve that by using `prop.table()` which requires a table as input: `prop.table(table(my_vector))`.
+
+Please take a look at the proportions of `loan_status` in the console below.
+
+```{r eda-table-three, exercise=TRUE}
+
+
+
+```
+
+
+```{r eda-table-three-quiz}
+
+question("How many percent of all applicants defaulted in the data set?",
+              answer("88.91 %"),
+              answer("11.09 %", correct = TRUE)
+)
+
+```
+
+
+
+### Exercise 5
+
+Now that you know the overall proportions of `loan_status` you might ask you the question if these proportions follow the same pattern across all bureau score classes (`grade` variable). Usually, you would expect that people with higher bureau scores default less often than people with a worse score.
+
+Like with `table()` you can use `prop.table()` with more than one variable: `prob.table(table(vector1, vector2), margin = 1)`. In the console below please investigate the proportions of `loan_status` across the various levels of `grade`. Use `grade` as vector 1 and `loan_status` as vector 2 together with the `margin = 1` argument. 
+
+```{r eda-table-four, exercise=TRUE}
+
+
+
+```
+
+```{r eda-table-four-quiz}
+
+quiz(caption = "Quiz: Using prop.table() with two variables",
+     question("How many percent of applicants in class 'C' paid back their loan?",
+              answer("85.32 %", correct = TRUE),
+              answer("79,72 %"),
+              answer("82.05 %")
+     ),
+     question("What is the overall pattern you discovered?",
+              answer("The proportions are the same across bureau score classes."),
+              answer("People with a worse bureau score pay back their loan more often than the rest."),
+              answer("People with a better bureau score pay back their loan more often than the rest.", correct = TRUE)
+     )
+)
+
+```
 
 
 ## Transforming Data
@@ -451,10 +571,6 @@ There a three basic options to deal with missing values in the data:
 * Delete rows/columns
 * Keep values
 * Replace values
-
-
-
-
 
 
 ## Modeling Data
