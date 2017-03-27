@@ -2,7 +2,7 @@
 title: "Demystifying Machine Learning - Training Exercises"
 author: Alexander Lemm
 output: 
-  tutor::tutorial:
+  tutor::tutorial
 runtime: shiny_prerendered
 ---
 
@@ -200,6 +200,7 @@ Banks keep information on the default behavior of past clients which can be used
 
 The data of past clients which we will use in the remainder of the course to create Machine Learning models to predict the probability of default for new clients looks as follows:
 
+*Note: If you see blank window below, please refresh your browser.*
 
 ```{r}
 
@@ -591,7 +592,9 @@ explanatory variables
 
 
 
-## Evaluating Data
+## Evaluating Models
 
 One simple model vs base line model
+
+## Exporting Model
 
