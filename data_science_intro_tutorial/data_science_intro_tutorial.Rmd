@@ -2,7 +2,9 @@
 title: "Demystifying Machine Learning - Training Exercises"
 author: Alexander Lemm
 output: 
-  tutor::tutorial
+  tutor::tutorial:
+    toc: yes
+    toc_float: yes
 runtime: shiny_prerendered
 ---
 
@@ -268,24 +270,24 @@ Use the console below to get your answers to the questions of the following quiz
 ```{r check-out-loan-data-quiz}
 
 quiz(caption = "Quiz: Examining loan data",
-     question("How many observations are stored in loan_data?",
+     question("How many observations are stored in loan_data_raw?",
               answer("8"),
               answer("19829"),
               answer("42"),
               answer("29092", correct = TRUE)
      ),
-     question("How many variables are stored in loan_data?",
+     question("How many variables are stored in loan_data_raw?",
               answer("19829"),
               answer("42"),
               answer("8", correct = TRUE),
               answer("29091")
      ),
-     question("How many variables of type integer are stored in loan_data?",
+     question("How many variables of type integer are stored in loan_data_raw?",
               answer("3", correct = TRUE),
               answer("4"),
               answer("1")
      ),       
-     question("How many variables of type factor are stored in loan_data?",
+     question("How many variables of type factor are stored in loan_data_raw?",
               answer("3"),
               answer("4", correct = TRUE),
               answer("1")
@@ -463,6 +465,9 @@ quiz(caption = "Quiz: Using summary()",
 )
 
 ```
+
+*Important*: The summary output shows you the `NA's` category for both the `int_rate` and the `emp_length` variable. `NA` stands for "Not Available" and signals missing values. As the analyst you now know that for many observations these values are missing. This is an important finding you need to deal with later in the "Transforming Data" phase.
+
 
 ### Excercise 2
 
