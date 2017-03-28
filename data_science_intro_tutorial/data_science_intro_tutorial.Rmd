@@ -540,9 +540,9 @@ question("How many percent of all applicants defaulted in the data set?",
 
 ### Exercise 5
 
-Now that you know the overall proportions of `loan_status` you might ask you the question if these proportions follow the same pattern across all bureau score classes (`grade` variable). Usually, you would expect that people with higher bureau scores default less often than people with a worse score.
+Now that you know the overall proportions of `loan_status` you might ask yourself the question if these proportions follow the same pattern across all bureau score classes (`grade` variable). Usually, you would expect that people with higher bureau scores default less often than people with a worse score.
 
-Like with `table()` you can use `prop.table()` with more than one variable: `prob.table(table(vector1, vector2), margin = 1)`. In the console below please investigate the proportions of `loan_status` across the various levels of `grade`. Use `grade` as vector 1 and `loan_status` as vector 2 together with the `margin = 1` argument. 
+Like with `table()` you can use `prop.table()` with more than one variable: `prop.table(table(vector1, vector2), margin = 1)`. In the console below please investigate the proportions of `loan_status` across the various levels of `grade`. Use `grade` as vector 1 and `loan_status` as vector 2 together with the `margin = 1` argument. 
 
 ```{r eda-table-four, exercise=TRUE}
 
@@ -570,7 +570,7 @@ quiz(caption = "Quiz: Using prop.table() with two variables",
 
 ### Exercise 6
 
-After exploring categorical variables we now focus on numeric variables in the subsequent exercises of this section. To plot the data we will the `qplot()` function from the `ggplot2` package. 
+After exploring categorical variables we now focus on numeric variables in the subsequent exercises of this section. To plot the data we will use the `qplot()` function from the `ggplot2` package. 
 
 A metarecipe for beginners to use this function looks as follows: `qplot(variable_on_x_axis, variable_on_y_axis_optional, data = your_data_frame, geom = "desired_plot_type")`. The `geom` parameter just specifies the plot type you would like to use. We will use one of the following valid `geom` values: "histogram", "density", "point".
 
@@ -658,7 +658,7 @@ qplot(loan_amnt , data = loan_data_raw, geom = "histogram")
 
 ### Exercise 9
 
-As an analyst you might be interested if the amount of credit people applied for differs between person who defaulted and who did not. A very easy way to do this is to map a group variable to the `fill` or `colour` parameter in the `qplot()` call. 
+As an analyst you might be interested if the amount of credit people applied for differs between persons who defaulted and who did not. A very easy way to do this is to map a group variable to the `fill` or `colour` parameter in the `qplot()` call. 
 
 Go ahead and create the histogram of the previous exercise. However, this time add `fill = as.factor(loan_status)` as the last argument to the `qplot()` call.
 
@@ -700,7 +700,7 @@ qplot(loan_amnt , data = loan_data_raw, geom = "density", color = as.factor(loan
 ```{r eda-qplot-loan_amnt-three-quiz}
 
 question("Do you spot an obvious difference in variation of loan_amnt between poeple who defaulted and who did not?",
-         answer("Yes, the distribution of loan amount for people who paid their credit back (red line) clearly differs from those who defaulted."),
+         answer("Yes, the distribution of loan amount for people who paid their credit back (red line) clearly differs from those who defaulted (blue line)."),
          answer("No, both density plots nearly have the exact same distribution. The amount of loan does not seem to be a strong indicator to separate those two groups.", correct = TRUE)
 )
 
@@ -735,9 +735,9 @@ qplot(loan_amnt , data = loan_data_raw, geom = "density", facets  = ~ grade)
 ```{r eda-qplot-loan_amnt-four-quiz}
 
 question("Do you spot a difference in loan amount variation across people with different bureau scores?",
-         answer("Yes, there is a difference. People with a higher bureau score tend to apply for higher credits."),
+         answer("Yes, there is a difference. People with a higher bureau score who are less creditworthy tend to apply for higher credits.", correct = TRUE),
          answer("No, there is no obvious difference in loan amount variation across the groups."),
-         answer("Yes, there is a difference. People with a lower bureau score tend to apply for higher credits.", correct = TRUE)
+         answer("Yes, there is a difference. People with a lower bureau score who are more creditworthy tend to apply for higher credits.")
 )
 
 ```
