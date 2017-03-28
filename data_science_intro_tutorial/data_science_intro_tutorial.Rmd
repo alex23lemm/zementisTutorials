@@ -10,6 +10,7 @@ runtime: shiny_prerendered
 library(tutor)
 library(magrittr)
 library(httr)
+library(ggplot2)
 
 
 tutor_options(exercise.completion = TRUE)
@@ -200,7 +201,7 @@ Banks keep information on the default behavior of past clients which can be used
 
 The data of past clients which we will use in the remainder of the course to create Machine Learning models to predict the probability of default for new clients looks as follows:
 
-*Note: If you see blank window below, please refresh your browser.*
+*Note: If you see a blank window below, please reload the web page by clicking on 'Reload' in your browser.*
 
 ```{r}
 
@@ -376,6 +377,9 @@ question("What is the second value in the sw_bmi vector?",
 
 ```
 
+
+
+
 #### Exercise 4
 
 We now can add the `sw_bmi` vector as a new column to the data frame `people` using the `$` operator and the `<-` assignment operator.
@@ -399,6 +403,8 @@ question("What is Darth Vader's BMI?",
 
 
 ```
+
+*Note:* What you just did is called 'feature engineering' in machine learning. Based on existing information you generated completely new information and added it to the data set.
 
 ## Exploring Data
 
@@ -557,6 +563,181 @@ quiz(caption = "Quiz: Using prop.table() with two variables",
               answer("People with a worse bureau score pay back their loan more often than the rest."),
               answer("People with a better bureau score pay back their loan more often than the rest.", correct = TRUE)
      )
+)
+
+```
+
+
+### Exercise 6
+
+After exploring categorical variables we now focus on numeric variables in the subsequent exercises of this section. To plot the data we will the `qplot()` function from the `ggplot2` package. 
+
+A metarecipe for beginners to use this function looks as follows: `qplot(variable_on_x_axis, variable_on_y_axis_optional, data = your_data_frame, geom = "desired_plot_type")`. The `geom` parameter just specifies the plot type you would like to use. We will use one of the following valid `geom` values: "histogram", "density", "point".
+
+One of the best ways to examine a single numeric variable to understand its variation is a histogram. A histogram is a graphical representation of the distribution of numerical data. For plotting a histogram you just need to specify the variable which will be plotted on the x-axis. The respective counts on the y-axis will be plotted automatically. 
+
+The first variable we will examine a bit closer is `age`. Use the console below to create a histogram for the `age` variable. Check out the hint button should you struggle to create the plot.
+
+
+```{r eda-qplot-age, exercise=TRUE}
+
+
+
+```
+
+
+```{r eda-qplot-age-hint}
+
+qplot(age, data = loan_data_raw, geom = "histogram")
+
+```
+
+
+```{r eda-qplot-age-quiz}
+
+question("The range of values on the x-axis is fairly wide. What is the reason for it?",
+              answer("Per default, qplot() creates the x-axis between 0 and 150"),
+              answer("It is a clear sign of at least one outlier", correct = TRUE)
+)
+
+```
+
+
+
+
+### Exercise 7
+
+One nice trick to take a closer look at the outliers of a single variable is a scatterplot. A scatterplot is a graph of plotted points that show the relationship between two variables. However, for outlier detection we can use a scatterplot with a single variable which will be plotted on the y-axis. On the x-axis we will just plot the number of the respective observation in the data set. 
+
+To do so, please use `seq_along(age)` as x-axis parameter (don't forget about the y-axis parameter) and `geom = "point"` in the `qplot()` call.
+
+
+
+```{r eda-qplot-age-point, exercise=TRUE}
+
+
+
+```
+
+
+```{r eda-qplot-age-point-hint}
+
+qplot(seq_along(age), age , data = loan_data_raw, geom = "point")
+
+```
+
+
+```{r eda-qplot-age-point-quiz}
+
+question("How many obvious age outliers could you spot?",
+         answer("1", correct = TRUE),
+         answer("8"),
+         answer("42")
+)
+
+```
+
+
+
+### Exercise 8
+
+The last variable we will examine is `loan_amnt`. Go ahead and create a histogram for `loan_amnt`
+
+```{r eda-qplot-loan_amnt, exercise=TRUE}
+
+
+
+```
+
+
+```{r eda-qplot-loan_amnt-hint}
+
+qplot(loan_amnt , data = loan_data_raw, geom = "histogram")
+
+```
+
+### Exercise 9
+
+As an analyst you might be interested if the amount of credit people applied for differs between person who defaulted and who did not. A very easy way to do this is to map a group variable to the `fill` or `colour` parameter in the `qplot()` call. 
+
+Go ahead and create the histogram of the previous exercise. However, this time add `fill = as.factor(loan_status)` as the last argument to the `qplot()` call.
+
+```{r eda-qplot-loan_amnt-two, exercise=TRUE}
+
+
+
+```
+
+
+```{r eda-qplot-loan_amnt-two-hint}
+
+qplot(loan_amnt , data = loan_data_raw, geom = "histogram", fill = as.factor(loan_status))
+
+```
+
+
+### Exercise 10
+
+It is impossible to see if there is a real difference between the two groups when looking at the previous plot because the y-axis shows the absolute number of counts. Since there are many more people in the data set who paid their credit back you are not able to spot a difference in variation between the two groups.
+
+In those situations analysts start using density plots instead of histograms. Density plots are much better for comparing distributions as they standardize the counts so that the areas under each frequency polygon is one.
+
+Create a density plot for the `loan_amnt` variable using `loan_status` as the group variable. Just re-use the command of the previous exercise. Instead of using `geom = "histogram"` please specify `geom = "density"` and map `as.factor(loan_status)` to `colour` instead to `fill`.
+
+```{r eda-qplot-loan_amnt-three, exercise=TRUE}
+
+
+
+```
+
+
+```{r eda-qplot-loan_amnt-three-hint}
+
+qplot(loan_amnt , data = loan_data_raw, geom = "density", color = as.factor(loan_status))
+
+```
+
+```{r eda-qplot-loan_amnt-three-quiz}
+
+question("Do you spot an obvious difference in variation of loan_amnt between poeple who defaulted and who did not?",
+         answer("Yes, the distribution of loan amount for people who paid their credit back (red line) clearly differs from those who defaulted."),
+         answer("No, both density plots nearly have the exact same distribution. The amount of loan does not seem to be a strong indicator to separate those two groups.", correct = TRUE)
+)
+
+```
+
+### Exercise 11
+
+OK, the last exercise showed that there does not seem to be an obvious difference in loan amount variation between the groups of people who defaulted and who did not. 
+
+But what about people of different bureau score classes (`grade` variable)? Is the variation of loan amount the same across all of those classes or not?
+
+To answer this question, we can map the `grade` variable to the `colour` parameter of the previous `qplot()` call (`colour = grade`). Like this you will create a single density plot with 7 lines. 
+
+Alternatively, you can split your plot into facets. Facets are subplots that each display one subset of the data. In order to create your first facet plot in R, please re-use the `qplot()` command from the previous exercise. Just omit the `colour` parameter completely and add `facets  = ~ grade` as the last argument.
+
+Go ahead create both kind of density plots (one plot with 7 lines, 7 subplot with a single line each) using the console below.
+
+```{r eda-qplot-loan_amnt-four, exercise=TRUE}
+
+
+
+```
+
+
+```{r eda-qplot-loan_amnt-four-hint}
+
+qplot(loan_amnt , data = loan_data_raw, geom = "density", colour = grade)
+qplot(loan_amnt , data = loan_data_raw, geom = "density", facets  = ~ grade)
+
+```
+
+```{r eda-qplot-loan_amnt-four-quiz}
+
+question("Do you spot a difference in loan amount variation across people with different bureau scores?",
+         answer("Yes, there is a difference. People with a higher bureau score tend to apply for higher credits."),
+         answer("No, there is no obvious difference in loan amount variation across the groups."),
+         answer("Yes, there is a difference. People with a lower bureau score tend to apply for higher credits.", correct = TRUE)
 )
 
 ```
