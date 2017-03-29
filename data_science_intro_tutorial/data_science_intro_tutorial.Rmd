@@ -425,8 +425,7 @@ Actually, the easiest way to develop this "feeling" for your data is to use ques
 There is no guideline or rule set about which questions you should ask to guide your research. However, the following types of questions are always a good starter for making discoveries within your data:
 
 * What type of variation occurs within my variables?
-* What is the relationship between my variables and what type of covariation occurs between them?
-
+* What is the relationship/behavior between my variables (covariation)?
 
 
 ### Excerises
@@ -750,14 +749,76 @@ question("Do you spot a difference in loan amount variation across people with d
 
 ## Transforming Data
 
-Goal: Fully pre-process data so that it can go into modeling.
-Remark: All of those steps always need to be replicated later for completely new data when we would like to make predictions. 
+The primary purpose when transforming the data is to address all issues identified during EDA. The analyst needs to make sure to prepare the data in such a way that it can directly be consumed by any ML algorithm further downstream.
 
-There a three basic options to deal with missing values in the data:
+It is very important to highlight that all steps conducted in this phase must be properly recorded because also new data needs to follow these pre-processing steps later in any kind of production setup.
 
-* Delete rows/columns
-* Keep values
-* Replace values
+In particular, an analyst needs to address the following:
+
+* Deal with missing values 
+* Get rid of outliers if necessary
+* Engineer new features and add them to the data
+* Fully pre-process data so that it can go into modeling
+
+In the lecuture you discussed various ways how to deal with missing values in your data. In the following exercises we will cover an other topic: outliers.
+
+
+### Exercise 1
+
+In the previous section you identified one outlier in the `age` variable far beyond the 100 years threshold. This is clearly wrong data. In addition, we identified one outlier in the `annual_inc` variable in the lecture. That person had an annual income of $6.000.000. Even though an outlier in this data set $6.000.000 can be valid value in real life.
+
+Let us first take a closer look at the one person in the data set representing the age outlier. For this we will use the `subset()` function. You can use the function for filtering/subsetting your data. For instance, to return a data frame with all persons who got a credit smaller than $20.000, you would use it in the following way: `subset(loan_data_raw, loan_amnt < 25)`.
+
+Please use `subset` to return all persons who are older than 100 years in the data set.
+
+
+```{r trans-subset, exercise=TRUE}
+
+
+
+```
+
+
+```{r trans-subset-quiz}
+
+question("What is the interesting result?",
+         answer("The person causing the outlier in the age variable got a C in bureau score."),
+         answer("The observation causing the outlier in the age variable and the one responsible for the outlier in the annual_inc variable are one and the same.", correct = TRUE),
+         answer("The person causing the outlier in the age variable got an interest rate of 12.73 %.")
+)
+
+```
+
+### Exercise 2
+
+Ok, you just learned that both outliers are actually caused by the same person. In this case we should delete the observation from the data set because at least the `age` entry is clearly wrong. 
+
+Again, we can use the `subset()` function for this. This time, however, we will filter for all observations which are younger than 100 years. 
+
+Please do the following in the console below:
+
+* Use `dim()` to check for the dimension of `loan_data_raw` again
+* Subset `loan_data_raw` by filtering for all persons younger than 100 years AND assign the results to a new variable called `loan_data`. The beginning of this call should look like `loan_data <- subset(loan_data_raw, ...`
+* Use `dim()` on `loan_data`
+
+```{r trans-subset-two, exercise=TRUE}
+
+
+
+```
+
+
+```{r trans-subset-two-quiz}
+
+question("What can you say about loan_data?",
+         answer("The new data frame loan_data has the same dimension as loan_data_raw."),
+         answer("The new data frame loan_data has one column less as expected."),
+         answer("The new data frame loan_data has one observation less as explected.", correct = TRUE)
+)
+
+```
+
+
 
 
 ## Modeling Data
