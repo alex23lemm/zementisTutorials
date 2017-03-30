@@ -726,7 +726,7 @@ To answer this question, we can map the `grade` variable to the `colour` paramet
 
 Alternatively, you can split your plot into facets. Facets are subplots that each display one subset of the data. In order to create your first facet plot in R, please re-use the `qplot()` command from the previous exercise. Just omit the `colour` parameter completely and add `facets  = ~ grade` as the last argument.
 
-Go ahead create both kind of density plots (one plot with 7 lines, 7 subplot with a single line each) using the console below.
+Go ahead and create both kind of density plots (one plot with 7 lines, 7 subplots with a single line each) using the console below.
 
 ```{r eda-qplot-loan_amnt-four, exercise=TRUE}
 
@@ -766,7 +766,7 @@ In particular, an analyst needs to address the following:
 * Engineer new features and add them to the data
 * Fully pre-process data so that it can go into modeling
 
-In the lecuture you discussed various ways how to deal with missing values in your data. In the following exercises we will cover an other topic: outliers.
+In the lecture you discussed various ways how to deal with missing values in your data. In the following exercises we will cover an other topic: outliers.
 
 
 ### Exercise 1
@@ -797,7 +797,7 @@ question("What is the interesting result?",
 
 ### Exercise 2
 
-Ok, you just learned that both outliers are actually caused by the same person. In this case we should delete the observation from the data set because at least the `age` entry is clearly wrong. 
+OK, you just learned that both outliers are actually caused by the same person. In this case we should delete the observation from the data set because at least the `age` entry is clearly wrong. 
 
 Again, we can use the `subset()` function for this. This time, however, we will filter for all observations which are younger than 100 years. 
 
@@ -819,27 +819,13 @@ Please do the following in the console below:
 question("What can you say about loan_data?",
          answer("The new data frame loan_data has the same dimension as loan_data_raw."),
          answer("The new data frame loan_data has one column less as expected."),
-         answer("The new data frame loan_data has one observation less as explected.", correct = TRUE)
+         answer("The new data frame loan_data has one observation less as expected.", correct = TRUE)
 )
 
 ```
 
 
-
-
 ## Modeling Data
-
-### Some Machine Learning Theory 
-
-
-supervised learning 
-
-response variable
-
-explanatory variables
-
-### Decision trees introduction
-
 
 ### Exercise 1
 
@@ -864,9 +850,11 @@ index <- createDataPartition(loan_data$loan_status, p = 0.7, list = FALSE)
 training_set <- loan_data[index, ]
 test_set <- loan_data[-index, ]
 
+
+
 rpart_mod <- partial(rpart, 
-                     # Specifying a loss matrix to cope with unbalanced set
-                     parms = list(loss = matrix(c(0, 10, 1, 0), nrow = 2)),
+                     # Using weights
+                     weights = ifelse(training_set$loan_status == 0, 1, 3),
                      control = rpart.control(cp = 0.001))
 
 # Building forest using downsampling
@@ -881,13 +869,13 @@ randomForest_mod <- partial(randomForest,
 
 ```
 
-We already split the original data set `loan_data` in a training set and test set for you. Both are available within the consoles now as `training_set` and `test_set`. The training set consists of 70% of the original data and the test set of 30% respectively. In the first exercise you will train a classificaton tree using the training set. 
+We already split the original data set `loan_data` in a training set and test set for you. Both are available within the consoles now as `training_set` and `test_set`. The training set consists of 70% of the original data and the test set of 30% respectively. In the first exercise you will train a classification tree using the training set. 
 
 For building trees in R you use the `rpart()` function. Since `rpart()` comes with a lot of arguments which might be a bit overwhelming for beginners you will use the function `rpart_mod()`. It is just a modified version of `rpart()` we created for you with pre-filled arguments. 
 
 Therefore, you just need to specify two arguments and pass them to `rpart_mod`. The first argument is a formula specifying the response (dependent variable) and the independent variables which should go into the model. Our response is `loan_status` and we would like to use all remaining variables as independent variables. Therefore **the first argument** looks as follows: `loan_status ~ .` "**.**" is just a shortcut for saying "all other variables". **The second argument** is the data the model should use for training: `data = training_set`.
 
-Now it is your turn: Create your first classificaton tree and assign it to a new variable `my_tree`.
+Now it is your turn: Create your first classification tree and assign it to a new variable `my_tree`.
 
 ```{r model-tree, exercise=TRUE, exercise.setup="prepare-modeling"}
 
@@ -901,18 +889,84 @@ my_tree <- rpart_mod(loan_status ~ ., data = training_set)
 
 ```
 
+```{r model-tree-quiz}
+
+question("Congrats! You just created your first machine learning model in R. But what IS this classification tree acutally?",
+         answer("Your classification tree is just a snippet of an R script."),
+         answer("I guess it is something magical."),
+         answer("Your classifcation tree is an R object residing in memory.", correct = TRUE)
+)
+
+```
 
 ### Exercise 2
 
+Now it is time to take a closer look at the tree and by using the `prp()` function. Pass `my_tree` to `prp()` in the console.
+
+
+```{r plot-tree, exercise=TRUE}
 
 
 
+```
 
 
-Next, you will build a random forest using the training data. 
+```{r plot-tree-quiz}
+
+question("Which variable was used for the first split?",
+         answer("annual_income"),
+         answer("grade", correct = TRUE),
+         answer("age")
+)
+
+```
+
+### Exercise 3
+
+Next, you will build your second machine learning model. However, this time you are going to build a whole random forest. But don't worry it is again just a single line of code.
+
+Usually, you use the `randomForest` function to build the forest. Like in exercise 1 above we created a modified version of this function `randomForest_mod()` which comes with some pre-filled arguments you don't need to worry about here.
+
+You just need to pass two arguments to the function exactly as before to `rpart_mod()`: `loan_status ~ .` and `data = training_set`. Go ahead and create your first random forest and assign it to the variable `my_forest`
+
+*Note:* This may take a little bit of time because the forest will consist of 500 trees.
+
+```{r model-forest, exercise=TRUE, exercise.setup="prepare-modeling"}
 
 
 
+```
+
+```{r model-forest-hint}
+
+my_forest <- randomForest_mod(loan_status ~ ., data = training_set)
+
+```
+
+
+
+### Exercise 4 
+
+You cannot plot the forest in the same manner like a single tree. For instance, the forest you just built consists of 500 trees. Luckily, there is another plotting function available for random forests called `varImpPlot()`. Instead of plotting one or more trees this function produces a bar chart with the average variable importance measured across all trees.
+
+Pass `my_forest` to `varImpPlot()` in the console.
+
+
+```{r plot-forest, exercise=TRUE}
+
+
+
+```
+
+```{r plot-forest-quiz}
+
+question("Which variable was used the most for splits in the entire forest?",
+         answer("annual_income", correct = TRUE),
+         answer("grade"),
+         answer("age")
+)
+
+```
 
 
 
