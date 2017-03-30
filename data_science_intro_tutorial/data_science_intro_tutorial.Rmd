@@ -10,9 +10,15 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 library(tutor)
-library(magrittr)
 library(httr)
 library(ggplot2)
+library(purrr)
+library(dplyr)
+library(tidyr)
+library(randomForest)
+library(rpart)
+library(rpart.plot)
+library(caret)
 
 
 tutor_options(exercise.completion = TRUE)
@@ -835,7 +841,78 @@ explanatory variables
 ### Decision trees introduction
 
 
-### Decision tress in R
+### Exercise 1
+
+```{r prepare-modeling}
+
+# We will use 5 bins for emp_length and 5 bins for int_rate
+loan_data <- loan_data_raw %>%
+  mutate(
+    emp_bin = as.character(cut_number(emp_length, 5)),
+    int_bin = as.character(cut_number(int_rate, 5))
+  ) %>%
+  replace_na(list(emp_bin = "Missing", int_bin = "Missing")) %>%
+  mutate(
+    emp_bin = as.factor(emp_bin),
+    int_bin = as.factor(int_bin),
+    loan_status = as.factor(loan_status)
+  ) %>%
+  select(-emp_length, -int_rate)
+
+set.seed(42)
+index <- createDataPartition(loan_data$loan_status, p = 0.7, list = FALSE)
+training_set <- loan_data[index, ]
+test_set <- loan_data[-index, ]
+
+rpart_mod <- partial(rpart, 
+                     # Specifying a loss matrix to cope with unbalanced set
+                     parms = list(loss = matrix(c(0, 10, 1, 0), nrow = 2)),
+                     control = rpart.control(cp = 0.001))
+
+# Building forest using downsampling
+randomForest_mod <- partial(randomForest, 
+                             ## Tell randomForest to sample by strata. Here, 
+                             ## that means within each class
+                             strata = training_set$loan_status,
+                             ## Now specify that the number of samples selected
+                             ## within each class should be the same
+                             sampsize = rep(sum(training_set$loan_status == 1), 2),
+                             mtry = 3)
+
+```
+
+We already split the original data set `loan_data` in a training set and test set for you. Both are available within the consoles now as `training_set` and `test_set`. The training set consists of 70% of the original data and the test set of 30% respectively. In the first exercise you will train a classificaton tree using the training set. 
+
+For building trees in R you use the `rpart()` function. Since `rpart()` comes with a lot of arguments which might be a bit overwhelming for beginners you will use the function `rpart_mod()`. It is just a modified version of `rpart()` we created for you with pre-filled arguments. 
+
+Therefore, you just need to specify two arguments and pass them to `rpart_mod`. The first argument is a formula specifying the response (dependent variable) and the independent variables which should go into the model. Our response is `loan_status` and we would like to use all remaining variables as independent variables. Therefore **the first argument** looks as follows: `loan_status ~ .` "**.**" is just a shortcut for saying "all other variables". **The second argument** is the data the model should use for training: `data = training_set`.
+
+Now it is your turn: Create your first classificaton tree and assign it to a new variable `my_tree`.
+
+```{r model-tree, exercise=TRUE, exercise.setup="prepare-modeling"}
+
+
+
+```
+
+```{r model-tree-hint}
+
+my_tree <- rpart_mod(loan_status ~ ., data = training_set)
+
+```
+
+
+### Exercise 2
+
+
+
+
+
+
+Next, you will build a random forest using the training data. 
+
+
+
 
 
 
