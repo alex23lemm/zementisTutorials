@@ -3,8 +3,8 @@ title: "Demystifying Machine Learning - Training Exercises"
 author: Alexander Lemm
 output: 
   tutor::tutorial:
-    toc: yes
-    toc_float: yes
+    progressive: true
+    allow_skip: true
 runtime: shiny_prerendered
 ---
 
@@ -258,7 +258,7 @@ The simplest case is obviously importing data from a file. When data is stored i
 Right after importing the data you need to check if the import was successful. 
 
 
-### Excerises
+### Exercises
 
 
 #### Exercise 1
@@ -434,7 +434,7 @@ There is no guideline or rule set about which questions you should ask to guide 
 * What is the relationship/behavior between my variables (covariation)?
 
 
-### Excerises
+### Exercises
 
 
 #### Exercise 1
@@ -474,7 +474,7 @@ quiz(caption = "Quiz: Using summary()",
 *Important*: The summary output shows you the `NA's` category for both the `int_rate` and the `emp_length` variable. `NA` stands for "Not Available" and signals missing values. As the analyst you now know that for many observations these values are missing. This is an important finding you need to deal with later in the "Transforming Data" phase.
 
 
-### Excercise 2
+#### Excercise 2
 
 `table()` is an extremely useful function when used with categorical data. It returns a frequency table of counts. For instance, the `home_owenership` and the `grade` columns are categorical variables in our data set. 
 
@@ -497,7 +497,7 @@ question("How many applicants had a credit score less or equal to F?",
 ```
 
 
-### Exercise 3
+#### Exercise 3
 
 When used with more than one categorical vector, `table()` returns a frequency table at each combination of the respective input levels. You just need to pass several categorical vectors to the function separated by a comma (`table(vector1, vector2)`). 
 
@@ -522,7 +522,7 @@ question("How many applicants house owners and had a credit score of 'D' when ap
 ```
 
 
-### Exercise 4
+#### Exercise 4
 
 There is one other important categorical variable in our data set: `loan_status`. If you look at the `summary()` output from exercise 1 again, it is not directly clear that `loan_status` is a categorical variable because all 5 stats for numeric variables are shown in the output. However, unlike R we know that `loan_status` only can have values "0" and "1" ("0" if the customer paid back the loan, "1" if he defaulted), so you can pass it to `table()`.
 
@@ -548,7 +548,7 @@ question("How many percent of all applicants defaulted in the data set?",
 
 
 
-### Exercise 5
+#### Exercise 5
 
 Now that you know the overall proportions of `loan_status` you might ask yourself the question if these proportions follow the same pattern across all bureau score classes (`grade` variable). Usually, you would expect that people with higher bureau scores default less often than people with a worse score.
 
@@ -578,7 +578,7 @@ quiz(caption = "Quiz: Using prop.table() with two variables",
 ```
 
 
-### Exercise 6
+#### Exercise 6
 
 After exploring categorical variables we now focus on numeric variables in the subsequent exercises of this section. To plot the data we will use the `qplot()` function from the `ggplot2` package. 
 
@@ -615,7 +615,7 @@ question("The range of values on the x-axis is fairly wide. What is the reason f
 
 
 
-### Exercise 7
+#### Exercise 7
 
 One nice trick to take a closer look at the outliers of a single variable is a scatterplot. A scatterplot is a graph of plotted points that show the relationship between two variables. However, for outlier detection we can use a scatterplot with a single variable which will be plotted on the y-axis. On the x-axis we will just plot the number of the respective observation in the data set. 
 
@@ -649,7 +649,7 @@ question("How many obvious age outliers could you spot?",
 
 
 
-### Exercise 8
+#### Exercise 8
 
 The last variable we will examine is `loan_amnt`. Go ahead and create a histogram for `loan_amnt`
 
@@ -666,7 +666,7 @@ qplot(loan_amnt , data = loan_data_raw, geom = "histogram")
 
 ```
 
-### Exercise 9
+#### Exercise 9
 
 As an analyst you might be interested if the amount of credit people applied for differs between persons who defaulted and who did not. A very easy way to do this is to map a group variable to the `fill` or `colour` parameter in the `qplot()` call. 
 
@@ -686,7 +686,7 @@ qplot(loan_amnt , data = loan_data_raw, geom = "histogram", fill = as.factor(loa
 ```
 
 
-### Exercise 10
+#### Exercise 10
 
 It is impossible to see if there is a real difference between the two groups when looking at the previous plot because the y-axis shows the absolute number of counts. Since there are many more people in the data set who paid their credit back you are not able to spot a difference in variation between the two groups.
 
@@ -716,7 +716,7 @@ question("Do you spot an obvious difference in variation of loan_amnt between po
 
 ```
 
-### Exercise 11
+#### Exercise 11
 
 OK, the last exercise showed that there does not seem to be an obvious difference in loan amount variation between the groups of people who defaulted and who did not. 
 
@@ -768,8 +768,9 @@ In particular, an analyst needs to address the following:
 
 In the lecture you discussed various ways how to deal with missing values in your data. In the following exercises we will cover an other topic: outliers.
 
+### Exercises
 
-### Exercise 1
+#### Exercise 1
 
 In the previous section you identified one outlier in the `age` variable far beyond the 100 years threshold. This is clearly wrong data. In addition, we identified one outlier in the `annual_inc` variable in the lecture. That person had an annual income of $6.000.000. Even though an outlier in this data set $6.000.000 can be valid value in real life.
 
@@ -795,7 +796,7 @@ question("What is the interesting result?",
 
 ```
 
-### Exercise 2
+#### Exercise 2
 
 OK, you just learned that both outliers are actually caused by the same person. In this case we should delete the observation from the data set because at least the `age` entry is clearly wrong. 
 
@@ -827,7 +828,9 @@ question("What can you say about loan_data?",
 
 ## Modeling Data
 
-### Exercise 1
+### Exercises
+
+#### Exercise 1
 
 ```{r prepare-modeling}
 
@@ -866,7 +869,6 @@ randomForest_mod <- partial(randomForest,
                              ## within each class should be the same
                              sampsize = rep(sum(training_set$loan_status == 1), 2),
                              mtry = 3)
-
 ```
 
 We already split the original data set `loan_data` in a training set and test set for you. Both are available within the consoles now as `training_set` and `test_set`. The training set consists of 70% of the original data and the test set of 30% respectively. In the first exercise you will train a classification tree using the training set. 
@@ -899,7 +901,7 @@ question("Congrats! You just created your first machine learning model in R. But
 
 ```
 
-### Exercise 2
+#### Exercise 2
 
 Now it is time to take a closer look at the tree and by using the `prp()` function. Pass `my_tree` to `prp()` in the console.
 
@@ -921,7 +923,7 @@ question("Which variable was used for the first split?",
 
 ```
 
-### Exercise 3
+#### Exercise 3
 
 Next, you will build your second machine learning model. However, this time you are going to build a whole random forest. But don't worry it is again just a single line of code.
 
@@ -945,11 +947,12 @@ my_forest <- randomForest_mod(loan_status ~ ., data = training_set)
 
 
 
-### Exercise 4 
+#### Exercise 4 
 
 You cannot plot the forest in the same manner like a single tree. For instance, the forest you just built consists of 500 trees. Luckily, there is another plotting function available for random forests called `varImpPlot()`. Instead of plotting one or more trees this function produces a bar chart with the average variable importance measured across all trees.
 
 Pass `my_forest` to `varImpPlot()` in the console.
+
 
 
 ```{r plot-forest, exercise=TRUE}
