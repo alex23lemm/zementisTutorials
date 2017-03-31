@@ -29,8 +29,8 @@ test_set <- loan_data[-index, ]
 
 
 rpart_mod <- partial(rpart, 
-                     # Using weights
-                     weights = ifelse(training_set$loan_status == 0, 1, 3),
+                     # Using priors
+                     parms = list(prior = c(0.7, 0.3)),
                      control = rpart.control(cp = 0.001))
 
 # Building forest using downsampling
@@ -43,7 +43,15 @@ randomForest_mod <- partial(randomForest,
                             sampsize = rep(sum(training_set$loan_status == 1), 2),
                             mtry = 3)
 
-my_tree <- rpart_mod(loan_status ~ ., data = training_set)
+prune_tree <- function(x) {
+  cv_error_min <- which.min(x$cptable[, "xerror"])
+  cp_min <- x$cptable[cv_error_min, "CP"]
+  prune(x, cp_min)
+}
+
+
+my_tree <- rpart_mod(loan_status ~ ., data = training_set) %>% prune_tree
 my_forest <- randomForest_mod(loan_status ~ ., data = training_set)
+
 
 rm(loan_data, index, training_set, test_set, rpart_mod, randomForest_mod)
