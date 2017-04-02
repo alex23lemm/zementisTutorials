@@ -48,4 +48,9 @@ prune_tree <- function(x) {
 my_tree <- rpart_mod(loan_status ~ ., data = training_set) %>% prune_tree
 my_forest <- randomForest_mod(loan_status ~ ., data = training_set)
 
-rm(loan_data, index, training_set, test_set, rpart_mod, randomForest_mod)
+predict_forest <- predict(my_forest, newdata = test_set)
+table_forest <- table("Actual values" = test_set$loan_status, 
+                      predictions = predict_forest)
+
+rm(loan_data, index, training_set, test_set, predict_forest, 
+   rpart_mod, randomForest_mod, prune_tree)

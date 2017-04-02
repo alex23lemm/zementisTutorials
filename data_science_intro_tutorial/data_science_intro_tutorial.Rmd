@@ -487,6 +487,12 @@ Apply `table()` on the `grade` column and remember the `$` operator which lets y
 
 ```
 
+```{r eda-table-one-hint}
+
+table(loan_data_raw$grade)
+
+```
+
 ```{r eda-table-one-quiz}
 
 question("How many applicants had a credit score less or equal to F?",
@@ -507,6 +513,13 @@ Below we would like to investigate the relationship between `grade` and `home_ow
 ```{r eda-table-two, exercise=TRUE}
 
 table(loan_data_raw$grade) 
+
+
+```
+
+```{r eda-table-two-hint}
+
+table(loan_data_raw$grade, loan_data_raw$home_ownership) 
 
 
 ```
@@ -560,6 +573,15 @@ Like with `table()` you can use `prop.table()` with more than one variable: `pro
 
 
 ```
+
+```{r eda-table-four-hint}
+
+prop.table(table(loan_data_raw$grade, loan_data_raw$loan_status), margin = 1)
+
+
+
+```
+
 
 ```{r eda-table-four-quiz}
 
@@ -871,15 +893,7 @@ randomForest_mod <- partial(randomForest,
                              sampsize = rep(sum(training_set$loan_status == 1), 2),
                              mtry = 3)
 
-conf_kpis <- function(x) {
- accuracy <- sum(diag(x))/sum(x)
- specificity <- sum(x[1, 1]/sum(x[1, 1:2]))
- sensitivity <- sum(x[2, 2]/sum(x[2, 1:2]))
- list(accuracy = accuracy, specificity = specificity, sensitivity = sensitivity)
-}
 
-predict_forest <- predict(my_forest, newdata = test_set)
-table_forest <- table("Actual values" = test_set$loan_status, predictions = predict_forest)
 
 ```
 
@@ -1004,6 +1018,8 @@ The code below calculates predictions using the random forest model `my_forest` 
 Just read and execute the code below.
 
 
+
+
 ```{r predict-forest, exercise=TRUE, exercise.setup="prepare-modeling"}
 
 predict_forest <- predict(my_forest, newdata = test_set)
@@ -1018,7 +1034,23 @@ Good, you just calculated predictions for the test set using the random forest m
 
 However, we created a little convenience function for you called `conf_kpis()` which just does this. Just pass the confusion matrix `table_forest` from the previous exercise to `conf_kpis` in the console below.  
 
-```{r calc-kpis, exercise=TRUE}
+```{r prepare-conf-matrix}
+
+conf_kpis <- function(x) {
+ accuracy <- sum(diag(x))/sum(x)
+ specificity <- sum(x[1, 1]/sum(x[1, 1:2]))
+ sensitivity <- sum(x[2, 2]/sum(x[2, 1:2]))
+ list(accuracy = accuracy, specificity = specificity, sensitivity = sensitivity)
+}
+
+
+```
+
+
+
+
+
+```{r calc-kpis, exercise=TRUE, exercise.setup="prepare-conf-matrix"}
 
 ```
 
@@ -1060,7 +1092,14 @@ tree_pmml
 
 ```
 
+```{r pmml-quiz}
 
+question("What is stored in the tree_pmml variable?",
+         answer("A JSON presentation of your classification tree"),
+         answer("A XML represenation of your classification tree", correct = TRUE)
+)
+
+```
 
 
 
