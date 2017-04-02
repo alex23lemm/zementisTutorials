@@ -19,6 +19,7 @@ library(randomForest)
 library(rpart)
 library(rpart.plot)
 library(caret)
+library(pmml)
 
 
 tutor_options(exercise.completion = TRUE)
@@ -1011,7 +1012,7 @@ table_forest
 
 ```
 
-#### Excercise 2
+#### Exercise 2
 
 Good, you just calculated predictions for the test set using the random forest model and compared them to the actual values using a confusion matrix. Next, you could calculate the different KPIs by hand you just learned in the lecture: accuracy, sensitivity and specificity. 
 
@@ -1039,4 +1040,31 @@ question("What is the sensitivity of the random forest model applied on the test
 
 
 ## Exporting Model
+
+### Exercises
+
+#### Exercise 1
+
+In this last exercise of the course we just show you how to convert the an R ML model (here: `my_tree`) into PMML which is super easy: You just need to put your ML model into the `pmml()` function and store the results in a new variable. 
+
+Afterwards you can save the results on disk using the `saveXML()` function. Since these are are server-based exercises we just will convert the model into PMML without storing the results to a file. 
+
+Please execute the code below and take a look at the `tree_pmml` variable. The additional two arguments `model.name` and `description` we pass to `pmml()` are optional but good practice.
+
+```{r pmml, exercise = TRUE}
+
+tree_pmml <- pmml(my_tree, 
+                 model.name = "Credit Risk Model",
+                 description = "Decision tree calculating the probablity of default.")
+tree_pmml
+
+```
+
+
+
+
+
+
+
+
 

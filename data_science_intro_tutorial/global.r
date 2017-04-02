@@ -3,8 +3,6 @@
 loan_data_raw <- readRDS("./www/loan_data_raw.rds")
 #loan_data_raw <- readRDS("./data_science_intro_tutorial/www/loan_data_raw.rds")
 
-
-
 # Create machine learning models for "Modeling Data" section -------------------
 
 # We will use 5 bins for emp_length and 5 bins for int_rate
@@ -25,8 +23,6 @@ set.seed(42)
 index <- createDataPartition(loan_data$loan_status, p = 0.7, list = FALSE)
 training_set <- loan_data[index, ]
 test_set <- loan_data[-index, ]
-
-
 
 rpart_mod <- partial(rpart, 
                      # Using priors
@@ -49,9 +45,7 @@ prune_tree <- function(x) {
   prune(x, cp_min)
 }
 
-
 my_tree <- rpart_mod(loan_status ~ ., data = training_set) %>% prune_tree
 my_forest <- randomForest_mod(loan_status ~ ., data = training_set)
-
 
 rm(loan_data, index, training_set, test_set, rpart_mod, randomForest_mod)
