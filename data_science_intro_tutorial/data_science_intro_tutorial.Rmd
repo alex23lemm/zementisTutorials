@@ -869,6 +869,17 @@ randomForest_mod <- partial(randomForest,
                              ## within each class should be the same
                              sampsize = rep(sum(training_set$loan_status == 1), 2),
                              mtry = 3)
+
+conf_kpis <- function(x) {
+ accuracy <- sum(diag(x))/sum(x)
+ specificity <- sum(x[1, 1]/sum(x[1, 1:2]))
+ sensitivity <- sum(x[2, 2]/sum(x[2, 1:2]))
+ list(accuracy = accuracy, specificity = specificity, sensitivity = sensitivity)
+}
+
+predict_forest <- predict(my_forest, newdata = test_set)
+table_forest <- table("Actual values" = test_set$loan_status, predictions = predict_forest)
+
 ```
 
 We already split the original data set `loan_data` in a training set and test set for you. Both are available within the consoles now as `training_set` and `test_set`. The training set consists of 70% of the original data and the test set of 30% respectively. In the first exercise you will train a classification tree using the training set. 
@@ -975,13 +986,57 @@ question("Which variable was used the most for splits in the entire forest?",
 
 Evaluating the model for credit risk means comparing the observed values in the loan status variable of the test set with the predicted outcomes.
 
-A popular method for summarizing the results is called confusion matrix.
+A popular method for summarizing the results is called confusion matrix. Is a contingency table of correct and incorrect classifications. It tells use how "confused" the model is with the data. 
 
-Is a contingency table of correct and incorrect classifications. It tells use how "confused" the model is with the data. 
+In the lecture you already saw the confusion matrices displaying the performance of the baseline model, the tree model and the random forest model applied on the test set. In order to do so we had to calculate the predictions produced by each model.
 
-On the main diagonal you will find the correct classifications. 
+### Exercises
 
-Several measures can be derived from the confusion matrix
+#### Exercise 1
+
+In this exercise we will show you how to derive predictions in R and how to calculate a confusion matrix. 
+
+Creating predictions in R is pretty straightforward: You need to use the `predict()` function for that. Its primary argument is a machine learning model and its second argument is new data which should be scored/predicted. The output is a vector of classified observations. 
+
+The code below calculates predictions using the random forest model `my_forest` for the test data. The calculated predictions are stored in the `predict_forest` vector.  Afterwards the confusion matrix is calculated and stored in a new variable `table_forest`.
+
+Just read and execute the code below.
+
+
+```{r predict-forest, exercise=TRUE, exercise.setup="prepare-modeling"}
+
+predict_forest <- predict(my_forest, newdata = test_set)
+table_forest <- table("Actual values" = test_set$loan_status, predictions = predict_forest)
+table_forest
+
+```
+
+#### Excercise 2
+
+Good, you just calculated predictions for the test set using the random forest model and compared them to the actual values using a confusion matrix. Next, you could calculate the different KPIs by hand you just learned in the lecture: accuracy, sensitivity and specificity. 
+
+However, we created a little convenience function for you called `conf_kpis()` which just does this. Just pass the confusion matrix `table_forest` from the previous exercise to `conf_kpis` in the console below.  
+
+```{r calc-kpis, exercise=TRUE}
+
+```
+
+```{r calc-kpis-hint}
+
+conf_kpis(table_forest)
+
+```
+
+```{r calc-kpis-quiz}
+
+question("What is the sensitivity of the random forest model applied on the test set?",
+         answer("71 %"),
+         answer("37 %", correct = TRUE),
+         answer("76 %")
+)
+
+```
+
 
 ## Exporting Model
 
