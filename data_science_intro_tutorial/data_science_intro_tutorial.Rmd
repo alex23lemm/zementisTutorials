@@ -1075,7 +1075,7 @@ question("What is the sensitivity of the random forest model applied on the test
 
 #### Exercise 1
 
-In this last exercise of the course we just show you how to convert the an R ML model (here: `my_tree`) into PMML which is super easy: You just need to put your ML model into the `pmml()` function and store the results in a new variable. 
+In this last exercise of the course we just show you how to convert an R ML model (here: `my_tree`) into PMML which is super easy: You just need to put your ML model into the `pmml()` function and store the results in a new variable. 
 
 Afterwards you can save the results on disk using the `saveXML()` function. Since these are are server-based exercises we just will convert the model into PMML without storing the results to a file. 
 
