@@ -899,7 +899,7 @@ We already split the original data set `loan_data` in a training set and test se
 
 For building trees in R you use the `rpart()` function. Since `rpart()` comes with a lot of arguments which might be a bit overwhelming for beginners you will use the function `rpart_mod()`. It is just a modified version of `rpart()` we created for you with pre-filled arguments. 
 
-Therefore, you just need to specify two arguments and pass them to `rpart_mod`. The first argument is a formula specifying the response (dependent variable) and the independent variables which should go into the model. Our response is `loan_status` and we would like to use all remaining variables as independent variables. Therefore **the first argument** looks as follows: `loan_status ~ .` "**.**" is just a shortcut for saying "all other variables". **The second argument** is the data the model should use for training: `data = training_set`.
+Therefore, you just need to specify two arguments and pass them to `rpart_mod`. The first argument is a formula specifying the response (dependent variable) and the independent variables which should go into the model (The formula interface to certain functions in R looks a bit weird because you have to use the "~" sign.) Our response is `loan_status` and we would like to use all remaining variables as independent variables. Therefore **the first argument** looks as follows: `loan_status ~ .` "**.**" is just a shortcut for saying "all other variables". **The second argument** is the data the model should use for training: `data = training_set`.
 
 Now it is your turn: Create your first classification tree and assign it to a new variable `my_tree`.
 
