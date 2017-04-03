@@ -3,8 +3,6 @@ title: "Demystifying Machine Learning - Training Exercises"
 author: Alexander Lemm
 output: 
   tutor::tutorial:
-    progressive: true
-    allow_skip: true
 runtime: shiny_prerendered
 ---
 
@@ -114,7 +112,7 @@ To get some information about the data frame's dimensions you can use `nrow()`, 
 ```{r mtcars-dim-quiz}
 
 question("Of how many rows and columns does the mtcars data frame consist?",
-    answer("11 columns and 32 rows"),
+    answer("32 columns and 11 rows"),
     answer("12 rows and 31 columns"),
     answer("32 rows and 11 columns", correct = TRUE)
   )
@@ -290,13 +288,13 @@ quiz(caption = "Quiz: Examining loan data",
               answer("29091")
      ),
      question("How many variables of type integer are stored in loan_data_raw?",
-              answer("3", correct = TRUE),
-              answer("4"),
+              answer("3"),
+              answer("4", correct = TRUE),
               answer("1")
      ),       
      question("How many variables of type factor are stored in loan_data_raw?",
-              answer("3"),
-              answer("4", correct = TRUE),
+              answer("2", correct = TRUE),
+              answer("4"),
               answer("1")
      ),
      question("What is the annunal income of the last individual in the data set?",
