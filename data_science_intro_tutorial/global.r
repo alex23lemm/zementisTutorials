@@ -19,6 +19,7 @@ loan_data <- loan_data_raw %>%
   ) %>%
   select(-emp_length, -int_rate)
 
+# Create training set (70%) and test set (30%)
 set.seed(42)
 index <- createDataPartition(loan_data$loan_status, p = 0.7, list = FALSE)
 training_set <- loan_data[index, ]
@@ -39,18 +40,16 @@ randomForest_mod <- partial(randomForest,
                             sampsize = rep(sum(training_set$loan_status == 1), 2),
                             mtry = 3)
 
-prune_tree <- function(x) {
-  cv_error_min <- which.min(x$cptable[, "xerror"])
-  cp_min <- x$cptable[cv_error_min, "CP"]
-  prune(x, cp_min)
-}
 
-my_tree <- rpart_mod(loan_status ~ ., data = training_set) %>% prune_tree
+
+my_tree <- rpart_mod(loan_status ~ ., data = training_set)
 my_forest <- randomForest_mod(loan_status ~ ., data = training_set)
 
 predict_forest <- predict(my_forest, newdata = test_set)
 table_forest <- table("Actual values" = test_set$loan_status, 
                       predictions = predict_forest)
 
+# Remove unncessary global variables from memory so that they won't appear in 
+# the lab consoles
 rm(loan_data, index, training_set, test_set, predict_forest, 
    rpart_mod, randomForest_mod, prune_tree)
