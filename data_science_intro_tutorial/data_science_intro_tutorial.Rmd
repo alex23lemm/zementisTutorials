@@ -59,7 +59,7 @@ But enough theory for now, time to practice. In the following exercises you will
 
 Every R session comes with a bunch of data sets which are directly available even though the user didn't load them explicitly into memory. We will take advantage of that fact and take a closer look at the `mtcars` data set. The data set was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and aspects of automobile design and performance for several automobiles (1973–74 models).
 
-In the console below type `mtcars` and hit CTRL + Enter or click on the green 'Run Code' button. This will print the content of the data set to the console. 
+In the console below type `mtcars` and hit CTRL + Enter or click on the 'Run Code' button. This will print the content of the data set to the console. 
 
 ```{r mtcars-print, exercise=TRUE}
 
@@ -125,6 +125,8 @@ question("Of how many rows and columns does the mtcars data frame consist?",
 
 One or perhaps THE most important function in R is `str()` which shows you the structure of an object. Try it out with the `mtcars` data frame.
 
+*Note*: The `str()` function has nothing to do with strings! It always returns the **str**ucture of the object.
+
 ```{r mtcars-str, exercise=TRUE}
 
 
@@ -178,13 +180,13 @@ question("What are the last 3 values of my_cyl when printing it to the console?"
 
 ### Some theory about credit risk modeling
 
-Modeling credit risk for both personal and company loans/credits is of major importance for banks. Credit risk modeling is all about the event of loan default: the situation a client fails to reimburse all or parts of the loan/credit.
+Modeling credit risk for both personal and company loans/credits is of major importance for banks. Credit risk modeling is all about the event of loan default: the situation a client fails to repay all or parts of the loan/credit.
 
-When a bank lends loan to a borrower, it usually transfers the entire amount of the loan to the borrower. Afterwards, the borrower will reimburse this loan amount in smaller chunks including some interest payments over time. There is a certain risk that a borrower will not fully reimburse his loan which results in a loss for the bank.
+When a bank lends loan to a borrower, it usually transfers the entire amount of the loan to the borrower. Afterwards, the borrower will repay this loan amount in smaller chunks including some interest payments over time. There is a certain risk that a borrower will not fully repay his loan which results in a loss for the bank.
 
 The components of expected loss (EL) for a bank consists of 3 parts:
 
-* *Probability of default (PD)*: The probability a borrower will fail to fully reimburse his loan
+* *Probability of default (PD)*: The probability a borrower will fail to fully repay his loan
 * *Exposure at default (EAD)*:  Amount of loan which still needs to be repaid at time of default
 * *Loss given default (LGD)*:  Amount of the loss at default expressed as percentage of the EAD
 
@@ -265,7 +267,7 @@ Right after importing the data you need to check if the import was successful.
 
 We already loaded the complete raw loan data set for you into memory and stored in the variable `loan_data_raw`. So you don't need to execute `read.csv()` yourself. 
 
-Use the console below to get your answers to the questions of the following quiz leveraging the functions you just learned about in section "R Introduction" (`str`, `head`, etc.). 
+Use the console below to get your answers to the questions of the following quiz leveraging the functions you just learned about in section "R Introduction" (`str`, `head`, `tail`, `dim`, `class`). 
 
 ```{r check-out-loan-data, exercise=TRUE}
 
@@ -297,7 +299,7 @@ quiz(caption = "Quiz: Examining loan data",
               answer("4"),
               answer("1")
      ),
-     question("What is the annunal income of the last individual in the data set?",
+     question("What is the annual income of the last individual in the data set?",
               answer("22000", correct = TRUE),
               answer("200000"),
               answer("18000")
@@ -334,7 +336,7 @@ sw_bmi <- people$mass / ((people$height/100)^2)
 
 ```
 
-The code below will download and parse some Star Wars character related data from the web. Execute it and inspect the `people` variable afterwards.
+The code below will download and parse some Star Wars character related data from the web. Execute it and inspect the `people` variable afterwards simply by typing `people` in console. 
 
 
 ```{r sw-api-people, exercise=TRUE, exercise.setup = "prepare-sw-api", warning=FALSE, message=FALSE}
@@ -360,12 +362,13 @@ question("Information on how many characters is stored in the people data frame?
 
 Imagine you are a data scientist interested in the Body Mass Index (BMI) of Star Wars characters. With the data you just downloaded you now can calculate the BMI and directly add it as a new column to the existing `people` data frame. 
 
-In general, the BMI is calculated as follows: bmi = (mass in kg) / ((height in m)^2). 
+In general, the BMI is calculated as follows: bmi = (mass in kg) / ((height in m)^2). Fortunately, the math operators in R look exactly the same as in the formula above ("/", "^").
 
-Fortunately, the math operators in R look exactly the same as in the formula above ("/", "^"). Execute the following code snippet in the console below: `people$mass / ((people$height / 100)^2)` and assign the results to the variable `sw_bmi`. Check out the `sw_bmi` variable afterwards. 
+Execute the following code in the console below `sw_bmi <- people$mass / ((people$height / 100)^2)` and check out the `sw_bmi` variable afterwards. 
 
 
 ```{r sw-api-bmi, exercise=TRUE, exercise.setup = "prepare-sw-api"}
+
 
 
 
@@ -389,9 +392,9 @@ question("What is the second value in the sw_bmi vector?",
 
 #### Exercise 4
 
-We now can add the `sw_bmi` vector as a new column to the data frame `people` using the `$` operator and the `<-` assignment operator.
+We now can add the `sw_bmi` vector as a new column to the data frame `people` using  also the `$` operator and the `<-` assignment operator.
 
-In the console below type `people$bmi <- sw_bmi` and inspect the entire data frame `people`. Can you explain what the commands you just executed did?
+In the console below type `people$bmi <- sw_bmi` and inspect the entire data frame `people`.
 
 
 ```{r sw-api-new_column, exercise=TRUE, exercise.setup = "prepare-sw-api"}
@@ -413,6 +416,7 @@ question("What is Darth Vader's BMI?",
 
 *Note:* What you just did is called 'feature engineering' in machine learning. Based on existing information you generated completely new information and added it to the data set.
 
+
 ## Exploring Data
 
 
@@ -420,7 +424,7 @@ Typically, the first step in data analysis is exploring the data using **simple 
 
 As an analyst you try to achieve to following in the EDA:
 
-* Develop a general understanding and "feeling" of your data
+* Develop a general understanding of, and "feeling" for,  your data
 * Identify potential problems such as missing values and outliers
 * Identify possible new features (feature engineering)
 * Identify possible transformations
@@ -506,7 +510,7 @@ question("How many applicants had a credit score less or equal to F?",
 
 When used with more than one categorical vector, `table()` returns a frequency table at each combination of the respective input levels. You just need to pass several categorical vectors to the function separated by a comma (`table(vector1, vector2)`). 
 
-Below we would like to investigate the relationship between `grade` and `home_ownership`. Complete the command accordingly by adding the `home_ownership` variable to the `table()` function. 
+Below we would like to investigate the relationship between `grade` and `home_ownership`. Complete the command accordingly by adding the `home_ownership` variable to the `table()` function as the second argument. 
 
 ```{r eda-table-two, exercise=TRUE}
 
@@ -525,7 +529,7 @@ table(loan_data_raw$grade, loan_data_raw$home_ownership)
 
 ```{r eda-table-two-quiz}
 
-question("How many applicants house owners and had a credit score of 'D' when applying for their loan?",
+question("How many applicants were home owners and had a credit score of 'D' when applying for their loan?",
               answer("434"),
               answer("1884"),
               answer("250", correct = TRUE)
@@ -562,23 +566,17 @@ question("How many percent of all applicants defaulted in the data set?",
 
 #### Exercise 5
 
-Now that you know the overall proportions of `loan_status` you might ask yourself the question if these proportions follow the same pattern across all bureau score classes (`grade` variable). Usually, you would expect that people with higher bureau scores default less often than people with a worse score.
+Now that you know the overall proportions of `loan_status` you might ask yourself the question if these proportions follow the same pattern across all bureau score classes (`grade` variable). Usually, you would expect that people with lower bureau scores default less often than people with higher scores.
 
-Like with `table()` you can use `prop.table()` with more than one variable: `prop.table(table(vector1, vector2), margin = 1)`. In the console below please investigate the proportions of `loan_status` across the various levels of `grade`. Use `grade` as vector 1 and `loan_status` as vector 2 together with the `margin = 1` argument. 
+Like with `table()` you can use `prop.table()` with more than one variable: `prop.table(table(vector1, vector2), margin = 1)`. In the console below please investigate the proportions of `loan_status` across the various levels of `grade` by executing the pre-filled code. 
 
 ```{r eda-table-four, exercise=TRUE}
 
-
-
-```
-
-```{r eda-table-four-hint}
-
 prop.table(table(loan_data_raw$grade, loan_data_raw$loan_status), margin = 1)
 
-
-
 ```
+
+
 
 
 ```{r eda-table-four-quiz}
@@ -603,21 +601,18 @@ quiz(caption = "Quiz: Using prop.table() with two variables",
 
 After exploring categorical variables we now focus on numeric variables in the subsequent exercises of this section. To plot the data we will use the `qplot()` function from the `ggplot2` package. 
 
-A metarecipe for beginners to use this function looks as follows: `qplot(variable_on_x_axis, variable_on_y_axis_optional, data = your_data_frame, geom = "desired_plot_type")`. The `geom` parameter just specifies the plot type you would like to use. We will use one of the following valid `geom` values: "histogram", "density", "point".
+A metarecipe for beginners to use this function looks as follows: `qplot(variable_on_x_axis, variable_on_y_axis_optional, data = your_data_frame, geom = "desired_plot_type")`. The `geom` parameter just specifies the plot type you would like to use. We will use one of the following valid `geom` values: "histogram", "density", "point":
+
+* `geom = "histogram"` will create a histogram
+* `geom = "density"` will create a density plot
+* `geom = "point"` will create a scatterplot
 
 One of the best ways to examine a single numeric variable to understand its variation is a histogram. A histogram is a graphical representation of the distribution of numerical data. For plotting a histogram you just need to specify the variable which will be plotted on the x-axis. The respective counts on the y-axis will be plotted automatically. 
 
-The first variable we will examine a bit closer is `age`. Use the console below to create a histogram for the `age` variable. Check out the hint button should you struggle to create the plot.
+The first variable we will examine a bit closer is `age`. Execute the code in the console below to create a histogram for the `age` variable. 
 
 
 ```{r eda-qplot-age, exercise=TRUE}
-
-
-
-```
-
-
-```{r eda-qplot-age-hint}
 
 qplot(age, data = loan_data_raw, geom = "histogram")
 
@@ -640,7 +635,7 @@ question("The range of values on the x-axis is fairly wide. What is the reason f
 
 One nice trick to take a closer look at the outliers of a single variable is a scatterplot. A scatterplot is a graph of plotted points that show the relationship between two variables. However, for outlier detection we can use a scatterplot with a single variable which will be plotted on the y-axis. On the x-axis we will just plot the number of the respective observation in the data set. 
 
-To do so, please use `seq_along(age)` as x-axis parameter (don't forget about the y-axis parameter) and `geom = "point"` in the `qplot()` call.
+To do so, please use `seq_along(age)` as x-axis parameter (don't forget about the y-axis parameter) and `geom = "point"` in the `qplot()` call. Check out the hint button should you struggle to create the plot.
 
 
 
@@ -672,7 +667,7 @@ question("How many obvious age outliers could you spot?",
 
 #### Exercise 8
 
-The last variable we will examine is `loan_amnt`. Go ahead and create a histogram for `loan_amnt`
+The last variable we will examine is `loan_amnt`. Go ahead and create a histogram for `loan_amnt`.
 
 ```{r eda-qplot-loan_amnt, exercise=TRUE}
 
@@ -691,7 +686,7 @@ qplot(loan_amnt , data = loan_data_raw, geom = "histogram")
 
 As an analyst you might be interested if the amount of credit people applied for differs between persons who defaulted and who did not. A very easy way to do this is to map a group variable to the `fill` or `colour` parameter in the `qplot()` call. 
 
-Go ahead and create the histogram of the previous exercise. However, this time add `fill = as.factor(loan_status)` as the last argument to the `qplot()` call.
+Go ahead and re-create the histogram of the previous exercise. However, this time add `fill = as.factor(loan_status)` as the last argument to the `qplot()` call.
 
 ```{r eda-qplot-loan_amnt-two, exercise=TRUE}
 
@@ -713,7 +708,7 @@ It is impossible to see if there is a real difference between the two groups whe
 
 In those situations analysts start using density plots instead of histograms. Density plots are much better for comparing distributions as they standardize the counts so that the areas under each frequency polygon is one.
 
-Create a density plot for the `loan_amnt` variable using `loan_status` as the group variable. Just re-use the command of the previous exercise. Instead of using `geom = "histogram"` please specify `geom = "density"` and map `as.factor(loan_status)` to `colour` instead to `fill`.
+Create a density plot for the `loan_amnt` variable using `loan_status` as the group variable. Just re-use the command of the previous exercise. Instead of using `geom = "histogram"` please specify `geom = "density"` and map `as.factor(loan_status)` to `colour` instead to `fill`: `colour = as.factor(loan_status)`.
 
 ```{r eda-qplot-loan_amnt-three, exercise=TRUE}
 
@@ -732,7 +727,7 @@ qplot(loan_amnt , data = loan_data_raw, geom = "density", color = as.factor(loan
 
 question("Do you spot an obvious difference in variation of loan_amnt between poeple who defaulted and who did not?",
          answer("Yes, the distribution of loan amount for people who paid their credit back (red line) clearly differs from those who defaulted (blue line)."),
-         answer("No, both density plots nearly have the exact same distribution. The amount of loan does not seem to be a strong indicator to separate those two groups.", correct = TRUE)
+         answer("No, both density plots have very similar distributions. The amount of loan does not seem to be a strong indicator to separate those two groups.", correct = TRUE)
 )
 
 ```
@@ -747,38 +742,37 @@ To answer this question, we can map the `grade` variable to the `colour` paramet
 
 Alternatively, you can split your plot into facets. Facets are subplots that each display one subset of the data. In order to create your first facet plot in R, please re-use the `qplot()` command from the previous exercise. Just omit the `colour` parameter completely and add `facets  = ~ grade` as the last argument.
 
-Go ahead and create both kind of density plots (one plot with 7 lines, 7 subplots with a single line each) using the console below.
+Go ahead and create both kind of density plots (one plot with 7 lines, 7 subplots with a single line each) by executing the code in the console below.
 
 ```{r eda-qplot-loan_amnt-four, exercise=TRUE}
-
-
-
-```
-
-
-```{r eda-qplot-loan_amnt-four-hint}
 
 qplot(loan_amnt , data = loan_data_raw, geom = "density", colour = grade)
 qplot(loan_amnt , data = loan_data_raw, geom = "density", facets  = ~ grade)
 
 ```
 
+
 ```{r eda-qplot-loan_amnt-four-quiz}
 
 question("Do you spot a difference in loan amount variation across people with different bureau scores?",
-         answer("Yes, there is a difference. People with a higher bureau score who are less creditworthy tend to apply for higher credits.", correct = TRUE),
-         answer("No, there is no obvious difference in loan amount variation across the groups."),
+         answer("Yes, there is a difference. People with a higher bureau score who are less creditworthy tend to apply for loan amounts.", correct = TRUE),
+         answer("No, there is no obvious difference in loan amount distribution across the groups."),
          answer("Yes, there is a difference. People with a lower bureau score who are more creditworthy tend to apply for higher credits.")
 )
 
 ```
+
+**Some word of caution:**  "Correlation does not imply causation" is a phrase used in statistics to emphasize that a correlation between two variables does not imply that one causes the other. In our case that means the following: It might be that these people default more because they ask for higher loan amounts, or they apply for higher loan amounts because they have bad credit scores and are desperate for a loan to consolidate credit card debts. More than that you are not able to tell at that point in time of the analysis.
+
+
+
 
 
 ## Transforming Data
 
 The primary purpose when transforming the data is to address all issues identified during EDA. The analyst needs to make sure to prepare the data in such a way that it can directly be consumed by any ML algorithm further downstream.
 
-It is very important to highlight that all steps conducted in this phase must be properly recorded because also new data needs to follow these pre-processing steps later in any kind of production setup.
+It is very important to highlight that all steps conducted in this phase must be properly recorded because new data also needs to follow these pre-processing steps in any kind of production setup.
 
 In particular, an analyst needs to address the following:
 
@@ -787,7 +781,7 @@ In particular, an analyst needs to address the following:
 * Engineer new features and add them to the data
 * Fully pre-process data so that it can go into modeling
 
-In the lecture you discussed various ways how to deal with missing values in your data. In the following exercises we will cover an other topic: outliers.
+In the lecture you discussed various ways how to deal with missing values in your data. In the following exercises we will cover another topic: outliers.
 
 ### Exercises
 
@@ -795,7 +789,7 @@ In the lecture you discussed various ways how to deal with missing values in you
 
 In the previous section you identified one outlier in the `age` variable far beyond the 100 years threshold. This is clearly wrong data. In addition, we identified one outlier in the `annual_inc` variable in the lecture. That person had an annual income of $6.000.000. Even though an outlier in this data set $6.000.000 can be valid value in real life.
 
-Let us first take a closer look at the one person in the data set representing the age outlier. For this we will use the `subset()` function. You can use the function for filtering/subsetting your data. For instance, to return a data frame with all persons who got a credit smaller than $20.000, you would use it in the following way: `subset(loan_data_raw, loan_amnt < 25)`.
+Let us first take a closer look at the one person in the data set representing the age outlier. For this we will use the `subset()` function. You can use the function for filtering/subsetting your data. For instance, to return a data frame with all persons who got a loan smaller than $20.000, you would use it in the following way: `subset(loan_data_raw, loan_amnt < 25)`.
 
 Please use `subset` to return all persons who are older than 100 years in the data set.
 
@@ -823,15 +817,19 @@ OK, you just learned that both outliers are actually caused by the same person. 
 
 Again, we can use the `subset()` function for this. This time, however, we will filter for all observations which are younger than 100 years. 
 
-Please do the following in the console below:
+The code in the console below does the following:
 
-* Use `dim()` to check for the dimension of `loan_data_raw` again
-* Subset `loan_data_raw` by filtering for all persons younger than 100 years AND assign the results to a new variable called `loan_data`. The beginning of this call should look like `loan_data <- subset(loan_data_raw, ...`
-* Use `dim()` on `loan_data`
+* `dim(loan_data_raw)`: checks for the dimension of `loan_data_raw`
+* `loan_data <- subset(loan_data_raw, age < 100)`: Subsets `loan_data_raw` by filtering for all persons younger than 100 years AND assigns the results to a new variable called `loan_data`
+* `dim(loan_data)`: checks for the dimension of `loan_data`
+
+Now, just execute the code and try to answer the question.
 
 ```{r trans-subset-two, exercise=TRUE}
 
-
+dim(loan_data_raw)
+loan_data <- subset(loan_data_raw, age < 100)
+dim(loan_data)
 
 ```
 
@@ -895,11 +893,13 @@ randomForest_mod <- partial(randomForest,
 
 ```
 
-We already split the original data set `loan_data` in a training set and test set for you. Both are available within the consoles now as `training_set` and `test_set`. The training set consists of 70% of the original data and the test set of 30% respectively. In the first exercise you will train a classification tree using the training set. 
+We already split the original data set `loan_data` into a training set and test set for you. Both are available within the consoles now as `training_set` and `test_set`. The training set consists of 70% of the original data and the test set of 30% respectively. In the first exercise you will train a classification tree using the training set. 
 
 For building trees in R you use the `rpart()` function. Since `rpart()` comes with a lot of arguments which might be a bit overwhelming for beginners you will use the function `rpart_mod()`. It is just a modified version of `rpart()` we created for you with pre-filled arguments. 
 
-Therefore, you just need to specify two arguments and pass them to `rpart_mod`. The first argument is a formula specifying the response (dependent variable) and the independent variables which should go into the model (The formula interface to certain functions in R looks a bit weird because you have to use the "~" sign.) Our response is `loan_status` and we would like to use all remaining variables as independent variables. Therefore **the first argument** looks as follows: `loan_status ~ .` "**.**" is just a shortcut for saying "all other variables". **The second argument** is the data the model should use for training: `data = training_set`.
+Therefore, you just need to specify two arguments and pass them to `rpart_mod`. The first argument is a formula specifying the response (dependent variable) and the independent variables which should go into the model. The so-called formula interface to certain functions in R looks a bit weird because you have to use the "~" sign as you will see below.
+
+Our response is `loan_status` and we would like to use all remaining variables as independent variables. Therefore **the first argument** looks as follows: `loan_status ~ .` "**.**" is just a shortcut for saying "all other variables". **The second argument** is the data the model should use for training: `data = training_set`.
 
 Now it is your turn: Create your first classification tree and assign it to a new variable `my_tree`.
 
@@ -917,7 +917,7 @@ my_tree <- rpart_mod(loan_status ~ ., data = training_set)
 
 ```{r model-tree-quiz}
 
-question("Congrats! You just created your first machine learning model in R. But what IS this classification tree acutally?",
+question("Congrats! You just created your first machine learning model in R. But what IS this classification tree actually?",
          answer("Your classification tree is just a snippet of an R script."),
          answer("I guess it is something magical."),
          answer("Your classifcation tree is an R object residing in memory.", correct = TRUE)
@@ -929,8 +929,22 @@ question("Congrats! You just created your first machine learning model in R. But
 
 Now it is time to take a closer look at the tree and by using the `prp()` function. Pass `my_tree` to `prp()` in the console.
 
+```{r prepare-plot-tree}
 
-```{r plot-tree, exercise=TRUE}
+prune_tree <- function(x) {
+  cv_error_min <- which.min(x$cptable[, "xerror"])
+  cp_min <- x$cptable[cv_error_min, "CP"]
+  prune(x, cp_min)
+}
+
+# Prunning global my_tree
+my_tree <- prune_tree(my_tree)
+
+```
+
+
+
+```{r plot-tree, exercise=TRUE, exercise.setup="prepare-plot-tree"}
 
 
 
@@ -973,7 +987,7 @@ my_forest <- randomForest_mod(loan_status ~ ., data = training_set)
 
 #### Exercise 4 
 
-You cannot plot the forest in the same manner like a single tree. For instance, the forest you just built consists of 500 trees. Luckily, there is another plotting function available for random forests called `varImpPlot()`. Instead of plotting one or more trees this function produces a bar chart with the average variable importance measured across all trees.
+You cannot plot the forest in the same manner like a single tree. For instance, the forest you just built consists of 500 trees. Luckily, there is another plotting function available for random forests called `varImpPlot()`. Instead of plotting one or more trees this function produces a bar chart with the average variable importance measured across all trees. The scientific term here for the average variable importance is "MeanDecreaseGini".
 
 Pass `my_forest` to `varImpPlot()` in the console.
 
@@ -999,7 +1013,7 @@ question("Which variable was used the most for splits in the entire forest?",
 
 Evaluating the model for credit risk means comparing the observed values in the loan status variable of the test set with the predicted outcomes.
 
-A popular method for summarizing the results is called confusion matrix. Is a contingency table of correct and incorrect classifications. It tells use how "confused" the model is with the data. 
+A popular method for summarizing the results is called confusion matrix. It is a contingency table of correct and incorrect classifications. It tells us how "confused" the model is with the data. 
 
 In the lecture you already saw the confusion matrices displaying the performance of the baseline model, the tree model and the random forest model applied on the test set. In order to do so we had to calculate the predictions produced by each model.
 
@@ -1013,9 +1027,7 @@ Creating predictions in R is pretty straightforward: You need to use the `predic
 
 The code below calculates predictions using the random forest model `my_forest` for the test data. The calculated predictions are stored in the `predict_forest` vector.  Afterwards the confusion matrix is calculated and stored in a new variable `table_forest`.
 
-Just read and execute the code below.
-
-
+Read and try to understand the code below. Afterwards just execute it.
 
 
 ```{r predict-forest, exercise=TRUE, exercise.setup="prepare-modeling"}
@@ -1075,18 +1087,18 @@ question("What is the sensitivity of the random forest model applied on the test
 
 #### Exercise 1
 
-In this last exercise of the course we just show you how to convert an R ML model (here: `my_tree`) into PMML which is super easy: You just need to put your ML model into the `pmml()` function and store the results in a new variable. 
+In this exercise we just show you how to convert an R ML model (here: `my_tree`) into PMML which is super easy: You just need to put your ML model into the `pmml()` function and store the results in a new variable. 
 
-Afterwards you can save the results on disk using the `saveXML()` function. Since these are are server-based exercises we just will convert the model into PMML without storing the results to a file. 
+Please execute the code below and take a look at the `tree_pmml` variable afterwards. The additional two arguments `model.name` and `description` we pass to `pmml()` are optional but good practice.
 
-Please execute the code below and take a look at the `tree_pmml` variable. The additional two arguments `model.name` and `description` we pass to `pmml()` are optional but good practice.
+**Note:** Do not try this for the random forest model here in the web application. It will time out and you won't receive a result because it actually takes several minutes to convert the entire forest to PMML.
 
 ```{r pmml, exercise = TRUE}
 
 tree_pmml <- pmml(my_tree, 
                  model.name = "Credit Risk Model",
                  description = "Decision tree calculating the probablity of default.")
-tree_pmml
+
 
 ```
 
@@ -1098,10 +1110,6 @@ question("What is stored in the tree_pmml variable?",
 )
 
 ```
-
-
-
-
 
 
 
