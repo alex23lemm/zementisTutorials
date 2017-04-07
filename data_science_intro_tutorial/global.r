@@ -40,6 +40,13 @@ randomForest_mod <- partial(randomForest,
                             sampsize = rep(sum(training_set$loan_status == 1), 2),
                             mtry = 3)
 
+# Create prunning function
+prune_tree <- function(x) {
+  cv_error_min <- which.min(x$cptable[, "xerror"])
+  cp_min <- x$cptable[cv_error_min, "CP"]
+  prune(x, cp_min)
+}
+
 
 
 my_tree <- rpart_mod(loan_status ~ ., data = training_set)
@@ -49,7 +56,13 @@ predict_forest <- predict(my_forest, newdata = test_set)
 table_forest <- table("Actual values" = test_set$loan_status, 
                       predictions = predict_forest)
 
+# Store path to working directory to variable during startup. This will
+# make sure that we can export the PMML representation of the model later to the
+# actual project directory. Otherwise it would be exported to a tmp folder since
+# all consoles run in their own separate processes.
+my_working_directory <- getwd()
+
 # Remove unncessary global variables from memory so that they won't appear in 
 # the lab consoles
 rm(loan_data, index, training_set, test_set, predict_forest, 
-   rpart_mod, randomForest_mod, prune_tree)
+   rpart_mod, randomForest_mod)

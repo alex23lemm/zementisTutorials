@@ -931,12 +931,6 @@ Now it is time to take a closer look at the tree and by using the `prp()` functi
 
 ```{r prepare-plot-tree}
 
-prune_tree <- function(x) {
-  cv_error_min <- which.min(x$cptable[, "xerror"])
-  cp_min <- x$cptable[cv_error_min, "CP"]
-  prune(x, cp_min)
-}
-
 # Prunning global my_tree
 my_tree <- prune_tree(my_tree)
 
@@ -1089,11 +1083,18 @@ question("What is the sensitivity of the random forest model applied on the test
 
 In this exercise we just show you how to convert an R ML model (here: `my_tree`) into PMML which is super easy: You just need to put your ML model into the `pmml()` function and store the results in a new variable. 
 
-Please execute the code below and take a look at the `tree_pmml` variable afterwards. The additional two arguments `model.name` and `description` we pass to `pmml()` are optional but good practice.
+Please execute the code below and take a look at the `tree_pmml` variable afterwards by printing it to the console. The additional two arguments `model.name` and `description` we pass to `pmml()` are optional but good practice.
 
 **Note:** Do not try this for the random forest model here in the web application. It will time out and you won't receive a result because it actually takes several minutes to convert the entire forest to PMML.
 
-```{r pmml, exercise = TRUE}
+```{r pmml-prepare}
+
+my_tree <- prune_tree(my_tree)
+
+```
+
+
+```{r pmml, exercise = TRUE, exercise.setup="pmml-prepare"}
 
 tree_pmml <- pmml(my_tree, 
                  model.name = "Credit Risk Model",
@@ -1112,4 +1113,45 @@ question("What is stored in the tree_pmml variable?",
 ```
 
 
+#### Exercise 2
+
+Next, we will save the results to disk using the `saveXML()` function. You just need to pass two arguments to `saveXML()`: the R object representing a XML document and the name of the file (including the absolute or relative path to it) to which we would like to save the XML document.  
+
+Now, please execute the code below in the console. It will save the PMML representation of the tree model `tree_pmml` you created in the previous exercise to your disk.
+
+
+```{r pmml-export-prepare}
+
+my_tree <- prune_tree(my_tree)
+tree_pmml <- pmml(my_tree, 
+                  model.name = "Credit Risk Model",
+                  description = "Decision tree calculating the probablity of default.")
+
+```
+
+
+```{r pmml-export, exercise=TRUE, exercise.setup="pmml-export-prepare"}
+
+saveXML(tree_pmml, file = file.path(my_working_directory, 
+                                    "export", "credit_risk_classification_tree.xml"))
+
+```
+
+**Note**: Normally, it would have been OK to specify the second argument to `saveXML()` like this: `file = "./export/credit_risk_classification_tree.xml`. However, each of the little consoles you used throughout the course runs in its own mini R process with a separate working directory somewhere in the temp folder hierarchy of your operating system. Therefore, we stored the working directory of the RStudio project in the `my_working_directory` variable during the startup of the web application. Like this, we were able to reference it later in order to store the xml file to the `/export` folder.
+
+
+#### Exercise 3
+
+In RStudio go to the `Files` tab and navigate to `./data_science_intro_tutorial/export`. Verify that the PMML file `credit_risk_classification_tree.xml` was created and check out its time stamp. Click on it so that it opens in the source pane
+
+
+```{r pmml-export-quiz}
+
+question("How many lines of code does the file have?",
+         answer("Approximately 60"),
+         answer("Approximately 250", correct = TRUE),
+         answer("Approximately, 800")
+)
+
+```
 
