@@ -9,3 +9,7 @@ This data science introduction course is the first part of the Zementis 2-days r
 
 No prior analytics or R knowledge is required. The course is completely self-contained. Students just should bring a general interest and curiosity for analytics topcis.
 
+## Installation
+
+Please, just follow the installation instructions provided in `Zementis Training - Install R Labs Instructions.ppt` with is part of this repository.
+
