@@ -2,12 +2,12 @@
 title: "Demystifying Machine Learning - Training Exercises"
 author: Alexander Lemm
 output: 
-  tutor::tutorial:
+  rtutor::tutorial:
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-library(tutor)
+library(rtutor)
 library(httr)
 library(ggplot2)
 library(purrr)
