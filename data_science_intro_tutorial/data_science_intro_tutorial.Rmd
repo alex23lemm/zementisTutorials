@@ -1,13 +1,12 @@
 ---
 title: "Demystifying Machine Learning - Training Exercises"
 author: Alexander Lemm
-output: 
-  rtutor::tutorial:
+output: learnr::tutorial
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-library(rtutor)
+library(learnr)
 library(httr)
 library(ggplot2)
 library(purrr)
@@ -20,7 +19,7 @@ library(caret)
 library(pmml)
 
 
-tutor_options(exercise.completion = TRUE)
+tutorial_options(exercise.completion = TRUE)
 knitr::opts_chunk$set(echo = FALSE)
 source("global.r")
 
@@ -336,7 +335,7 @@ sw_bmi <- people$mass / ((people$height/100)^2)
 
 ```
 
-The code below will download and parse some Star Wars character related data from the web. Execute it and inspect the `people` variable afterwards simply by typing `people` in console. 
+The code below will download and parse some Star Wars character related data from the web. Execute it and inspect the `people` variable afterwards simply by typing `people` in the console. 
 
 
 ```{r sw-api-people, exercise=TRUE, exercise.setup = "prepare-sw-api", warning=FALSE, message=FALSE}
