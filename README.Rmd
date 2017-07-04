@@ -1,19 +1,32 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-zementisTutorials
-=================
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# zementisTutorials
 
 The goal of zementisTutorials is to ...
 
-Installation
-------------
+## Installation
 
 You can install zementisTutorials from github with:
 
-``` r
+```{r installation, eval=FALSE}
 
 # install.packages("devtools")
 devtools::install_github("alex23lemm/zementisTutorials")
 ```
 
-Usage
------
+## Usage
+
