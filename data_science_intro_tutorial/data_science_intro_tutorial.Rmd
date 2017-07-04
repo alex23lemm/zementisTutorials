@@ -1,29 +1,124 @@
 ---
 title: "Demystifying Machine Learning - Training Exercises"
+tutorial:
+  version: 2.0
 author: Alexander Lemm
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
+
 library(learnr)
-library(httr)
+library(magrittr)
 library(ggplot2)
-library(purrr)
-library(dplyr)
-library(tidyr)
-library(randomForest)
-library(rpart)
-library(rpart.plot)
-library(caret)
-library(pmml)
+
+
+##library(purrr)
+#library(dplyr)
+#library(tidyr)
+#library(randomForest)
+#library(rpart)
+#library(rpart.plot)
+#library(pmml)
+#library(caret)
+
+#library(dplyr)
+#library(tidyr)
+#library(randomForest)
+#library(rpart.plot)
+#library(pmml)
 
 
 tutorial_options(exercise.completion = TRUE)
 knitr::opts_chunk$set(echo = FALSE)
-source("global.r")
+#source("global.r")
+
+# Import data sets which should be made available globally ---------------------
+
+loan_data_raw <- readRDS("./www/loan_data_raw.rds")
+#loan_data_raw <- readRDS("./data_science_intro_tutorial/www/loan_data_raw.rds")
+
+# Store path to working directory to variable during startup. This will
+# make sure that we can export the PMML representation of the model later to the
+# actual project directory. Otherwise it would be exported to a tmp folder since
+# all consoles run in their own separate processes.
+my_working_directory <- getwd()
 
 
+# Create functions and variables for specfic exercise chapters -----------------
+
+
+# NOTE: Originally, the code below was part of a setup chunk that was 
+# shared by several exercises in the "Modeling Data", "Evaluatung Models" and
+# "Export Model" section. However, each exercise chunk which referenced 
+# the particular setup chunk always ran the entire code again which took too much time. 
+# Therefore, we moved the respective code block to the global environment with 
+# the drawback that a lot of variables are available to the end user via ls()
+# right from the start. But this is by far the best solution since "exercise 
+# chaining" (https://github.com/rstudio/learnr/issues/72#issuecomment-304995705)
+# is not yet supported by learnr.
+
+
+# We will use 5 bins for emp_length and 5 bins for int_rate
+loan_data <- loan_data_raw %>%
+  dplyr::mutate(
+    emp_bin = as.character(ggplot2::cut_number(emp_length, 5)),
+    int_bin = as.character(ggplot2::cut_number(int_rate, 5))
+  ) %>%
+  tidyr::replace_na(list(emp_bin = "Missing", int_bin = "Missing")) %>%
+  dplyr::mutate(
+    emp_bin = as.factor(emp_bin),
+    int_bin = as.factor(int_bin),
+    loan_status = as.factor(loan_status)
+  ) %>%
+  dplyr::select(-emp_length, -int_rate)
+
+# Create training set (70%) and test set (30%)
+set.seed(42)
+index <- caret::createDataPartition(loan_data$loan_status, p = 0.7, list = FALSE)
+training_set <- loan_data[index, ]
+test_set <- loan_data[-index, ]
+
+rpart_mod <- purrr::partial(rpart::rpart, 
+                     # Using priors
+                     parms = list(prior = c(0.7, 0.3)),
+                     control = rpart::rpart.control(cp = 0.001))
+
+# Building forest using downsampling
+randomForest_mod <- purrr::partial(randomForest::randomForest, 
+                            ## Tell randomForest to sample by strata. Here, 
+                            ## that means within each class
+                            strata = training_set$loan_status,
+                            ## Now specify that the number of samples selected
+                            ## within each class should be the same
+                            sampsize = rep(sum(training_set$loan_status == 1), 2),
+                            mtry = 3)
+
+# Create prunning function
+prune_tree <- function(tree) {
+  cv_error_min <- which.min(tree$cptable[, "xerror"])
+  cp_min <- tree$cptable[cv_error_min, "CP"]
+  rpart::prune(tree, cp_min)
+}
+
+my_tree <- rpart_mod(loan_status ~ ., data = training_set) %>% prune_tree
+my_forest <- randomForest_mod(loan_status ~ ., data = training_set)
+
+predict_forest <- predict(my_forest, newdata = test_set)
+table_forest <- table("Actual values" = test_set$loan_status, 
+                      predictions = predict_forest)
+
+conf_kpis <- function(x) {
+ accuracy <- sum(diag(x))/sum(x)
+ specificity <- sum(x[1, 1]/sum(x[1, 1:2]))
+ sensitivity <- sum(x[2, 2]/sum(x[2, 1:2]))
+ list(accuracy = accuracy, specificity = specificity, sensitivity = sensitivity)
+}
+
+tree_pmml <- pmml::pmml(my_tree, 
+                  model.name = "Credit Risk Model",
+                  description = "Decision tree calculating the probablity of default.")
 ```
 
 ## Overview
@@ -84,8 +179,6 @@ question("What is the class of the mtcars object?",
     answer("matrix"),
     allow_retry = TRUE
   )
-
-
 ```
 
 
@@ -115,8 +208,6 @@ question("Of how many rows and columns does the mtcars data frame consist?",
     answer("12 rows and 31 columns"),
     answer("32 rows and 11 columns", correct = TRUE)
   )
-
-
 ```
 
 
@@ -146,8 +237,8 @@ In the console below execute `mtcars$mpg`. After that type `mtcars$` and hit 'ta
 
 
 ```{r mtcars-dollar, exercise=TRUE}
-mtcars$mpg
 
+mtcars$mpg
 ```
  
 
@@ -158,8 +249,8 @@ If you like to assign a data frame column's content to a new variable you have t
 In the console below we give you a small example. Go ahead and execute the code. Afterwards, assign the the cylinder column to a new variable `my_cyl` and print it to the console. Compare this output with `mtcars$cyl`.
 
 ```{r mtcars-assignment, exercise=TRUE}
-my_mpg <- mtcars$mpg
 
+my_mpg <- mtcars$mpg
 ```
 
 
@@ -171,7 +262,6 @@ question("What are the last 3 values of my_cyl when printing it to the console?"
     answer("8, 8, 4"),
     answer("6, 6, 4")
   )
-
 ```
 
 
@@ -213,8 +303,7 @@ The data of past clients which we will use in the remainder of the course to cre
 
 ```{r}
 
-head(readRDS("./www/loan_data_raw.rds"), 10)
-
+head(loan_data_raw, 10)
 ```
 
 
@@ -241,7 +330,6 @@ question("Which is the only behavioral variable in the dataset?",
          answer("annual_inc"),
          answer("age")
          )
-
 ```
 
 
@@ -270,8 +358,8 @@ Use the console below to get your answers to the questions of the following quiz
 
 ```{r check-out-loan-data, exercise=TRUE}
 
-```
 
+```
 
 ```{r check-out-loan-data-quiz}
 
@@ -308,7 +396,6 @@ quiz(caption = "Quiz: Examining loan data",
               answer("RENT", correct = TRUE)
      )
 )
-
 ```
 
 
@@ -317,6 +404,8 @@ quiz(caption = "Quiz: Examining loan data",
 OK, in the following 3 exercises we just gonna have some fun using the Star Wars REST API (http://swapi.co) to download some data directly from the web. This is just a little demo to show you that data scientists may also leverage any kind of web API to gather and analyze data.
 
 ```{r prepare-sw-api, warning=FALSE, message=FALSE}
+
+library(httr)
 
 parse_sw_people <- function(x) {
   x %>% httr::content(as = "text") %>% 
@@ -332,7 +421,6 @@ parse_sw_people <- function(x) {
 people <- GET("http://swapi.co/api/people/") %>% parse_sw_people
 
 sw_bmi <- people$mass / ((people$height/100)^2)
-
 ```
 
 The code below will download and parse some Star Wars character related data from the web. Execute it and inspect the `people` variable afterwards simply by typing `people` in the console. 
@@ -341,7 +429,6 @@ The code below will download and parse some Star Wars character related data fro
 ```{r sw-api-people, exercise=TRUE, exercise.setup = "prepare-sw-api", warning=FALSE, message=FALSE}
 
 people <- GET("http://swapi.co/api/people/") %>% parse_sw_people
-
 ```
 
 ```{r sw-bmi-people-quiz}
@@ -351,8 +438,6 @@ question("Information on how many characters is stored in the people data frame?
     answer("18"),
     answer("10", correct = TRUE)
   )
-
-
 ```
 
 
@@ -369,8 +454,6 @@ Execute the following code in the console below `sw_bmi <- people$mass / ((peopl
 ```{r sw-api-bmi, exercise=TRUE, exercise.setup = "prepare-sw-api"}
 
 
-
-
 ```
 
 The command above calculated the BMI for each character based on the two columns `mass` and `height`. This command worked because in R most functions are "vectorized".
@@ -381,9 +464,7 @@ question("What is the second value in the sw_bmi vector?",
     answer("26.02758"),
     answer("26.89232", correct = TRUE),
     answer("25.08286")
-  )
-
-
+)
 ```
 
 
@@ -408,9 +489,7 @@ question("What is Darth Vader's BMI?",
     answer("34.00999"),
     answer("26.02758"),
     answer("33.33007", correct = TRUE)
-  )
-
-
+)
 ```
 
 *Note:* What you just did is called 'feature engineering' in machine learning. Based on existing information you generated completely new information and added it to the data set.
@@ -450,7 +529,6 @@ Please use `summary()` to start your EDA on `loan_data_raw` in the console below
 
 ```
 
-
 ```{r eda-summary-quiz}
 
 quiz(caption = "Quiz: Using summary()",
@@ -470,7 +548,6 @@ quiz(caption = "Quiz: Using summary()",
               answer("14692")
      )
 )
-
 ```
 
 *Important*: The summary output shows you the `NA's` category for both the `int_rate` and the `emp_length` variable. `NA` stands for "Not Available" and signals missing values. As the analyst you now know that for many observations these values are missing. This is an important finding you need to deal with later in the "Transforming Data" phase.
@@ -491,7 +568,6 @@ Apply `table()` on the `grade` column and remember the `$` operator which lets y
 ```{r eda-table-one-hint}
 
 table(loan_data_raw$grade)
-
 ```
 
 ```{r eda-table-one-quiz}
@@ -501,7 +577,6 @@ question("How many applicants had a credit score less or equal to F?",
               answer("267", correct = TRUE),
               answer("56")
      )
-
 ```
 
 
@@ -514,15 +589,11 @@ Below we would like to investigate the relationship between `grade` and `home_ow
 ```{r eda-table-two, exercise=TRUE}
 
 table(loan_data_raw$grade) 
-
-
 ```
 
 ```{r eda-table-two-hint}
 
 table(loan_data_raw$grade, loan_data_raw$home_ownership) 
-
-
 ```
 
 
@@ -532,8 +603,7 @@ question("How many applicants were home owners and had a credit score of 'D' whe
               answer("434"),
               answer("1884"),
               answer("250", correct = TRUE)
-     )
-
+)
 ```
 
 
@@ -548,9 +618,7 @@ Please take a look at the proportions of `loan_status` in the console below.
 ```{r eda-table-three, exercise=TRUE}
 
 
-
 ```
-
 
 ```{r eda-table-three-quiz}
 
@@ -558,7 +626,6 @@ question("How many percent of all applicants defaulted in the data set?",
               answer("88.91 %"),
               answer("11.09 %", correct = TRUE)
 )
-
 ```
 
 
@@ -572,11 +639,7 @@ Like with `table()` you can use `prop.table()` with more than one variable: `pro
 ```{r eda-table-four, exercise=TRUE}
 
 prop.table(table(loan_data_raw$grade, loan_data_raw$loan_status), margin = 1)
-
 ```
-
-
-
 
 ```{r eda-table-four-quiz}
 
@@ -592,7 +655,6 @@ quiz(caption = "Quiz: Using prop.table() with two variables",
               answer("People with a better bureau score pay back their loan more often than the rest.", correct = TRUE)
      )
 )
-
 ```
 
 
@@ -614,9 +676,7 @@ The first variable we will examine a bit closer is `age`. Execute the code in th
 ```{r eda-qplot-age, exercise=TRUE}
 
 qplot(age, data = loan_data_raw, geom = "histogram")
-
 ```
-
 
 ```{r eda-qplot-age-quiz}
 
@@ -624,7 +684,6 @@ question("The range of values on the x-axis is fairly wide. What is the reason f
               answer("Per default, qplot() creates the x-axis between 0 and 150"),
               answer("It is a clear sign of at least one outlier", correct = TRUE)
 )
-
 ```
 
 
@@ -641,16 +700,12 @@ To do so, please use `seq_along(age)` as x-axis parameter (don't forget about th
 ```{r eda-qplot-age-point, exercise=TRUE}
 
 
-
 ```
-
 
 ```{r eda-qplot-age-point-hint}
 
 qplot(seq_along(age), age , data = loan_data_raw, geom = "point")
-
 ```
-
 
 ```{r eda-qplot-age-point-quiz}
 
@@ -659,7 +714,6 @@ question("How many obvious age outliers could you spot?",
          answer("8"),
          answer("42")
 )
-
 ```
 
 
@@ -671,14 +725,11 @@ The last variable we will examine is `loan_amnt`. Go ahead and create a histogra
 ```{r eda-qplot-loan_amnt, exercise=TRUE}
 
 
-
 ```
-
 
 ```{r eda-qplot-loan_amnt-hint}
 
 qplot(loan_amnt , data = loan_data_raw, geom = "histogram")
-
 ```
 
 #### Exercise 9
@@ -690,14 +741,12 @@ Go ahead and re-create the histogram of the previous exercise. However, this tim
 ```{r eda-qplot-loan_amnt-two, exercise=TRUE}
 
 
-
 ```
 
 
 ```{r eda-qplot-loan_amnt-two-hint}
 
 qplot(loan_amnt , data = loan_data_raw, geom = "histogram", fill = as.factor(loan_status))
-
 ```
 
 
@@ -712,14 +761,11 @@ Create a density plot for the `loan_amnt` variable using `loan_status` as the gr
 ```{r eda-qplot-loan_amnt-three, exercise=TRUE}
 
 
-
 ```
-
 
 ```{r eda-qplot-loan_amnt-three-hint}
 
 qplot(loan_amnt , data = loan_data_raw, geom = "density", color = as.factor(loan_status))
-
 ```
 
 ```{r eda-qplot-loan_amnt-three-quiz}
@@ -728,7 +774,6 @@ question("Do you spot an obvious difference in variation of loan_amnt between po
          answer("Yes, the distribution of loan amount for people who paid their credit back (red line) clearly differs from those who defaulted (blue line)."),
          answer("No, both density plots have very similar distributions. The amount of loan does not seem to be a strong indicator to separate those two groups.", correct = TRUE)
 )
-
 ```
 
 #### Exercise 11
@@ -747,7 +792,6 @@ Go ahead and create both kind of density plots (one plot with 7 lines, 7 subplot
 
 qplot(loan_amnt , data = loan_data_raw, geom = "density", colour = grade)
 qplot(loan_amnt , data = loan_data_raw, geom = "density", facets  = ~ grade)
-
 ```
 
 
@@ -758,7 +802,6 @@ question("Do you spot a difference in loan amount variation across people with d
          answer("No, there is no obvious difference in loan amount distribution across the groups."),
          answer("Yes, there is a difference. People with a lower bureau score who are more creditworthy tend to apply for higher credits.")
 )
-
 ```
 
 **Some word of caution:**  "Correlation does not imply causation" is a phrase used in statistics to emphasize that a correlation between two variables does not imply that one causes the other. In our case that means the following: It might be that these people default more because they ask for higher loan amounts, or they apply for higher loan amounts because they have bad credit scores and are desperate for a loan to consolidate credit card debts. More than that you are not able to tell at that point in time of the analysis.
@@ -788,7 +831,7 @@ In the lecture you discussed various ways how to deal with missing values in you
 
 In the previous section you identified one outlier in the `age` variable far beyond the 100 years threshold. This is clearly wrong data. In addition, we identified one outlier in the `annual_inc` variable in the lecture. That person had an annual income of $6.000.000. Even though an outlier in this data set $6.000.000 can be valid value in real life.
 
-Let us first take a closer look at the one person in the data set representing the age outlier. For this we will use the `subset()` function. You can use the function for filtering/subsetting your data. For instance, to return a data frame with all persons who got a loan smaller than $20.000, you would use it in the following way: `subset(loan_data_raw, loan_amnt < 25)`.
+Let us first take a closer look at the one person in the data set representing the age outlier. For this we will use the `subset()` function. You can use the function for filtering/subsetting your data. For instance, to return a data frame with all persons who got a loan smaller than $20.000, you would use it in the following way: `subset(loan_data_raw, loan_amnt < 20000)`.
 
 Please use `subset` to return all persons who are older than 100 years in the data set.
 
@@ -796,9 +839,7 @@ Please use `subset` to return all persons who are older than 100 years in the da
 ```{r trans-subset, exercise=TRUE}
 
 
-
 ```
-
 
 ```{r trans-subset-quiz}
 
@@ -807,7 +848,6 @@ question("What is the interesting result?",
          answer("The observation causing the outlier in the age variable and the one responsible for the outlier in the annual_inc variable are one and the same.", correct = TRUE),
          answer("The person causing the outlier in the age variable got an interest rate of 12.73 %.")
 )
-
 ```
 
 #### Exercise 2
@@ -829,9 +869,7 @@ Now, just execute the code and try to answer the question.
 dim(loan_data_raw)
 loan_data <- subset(loan_data_raw, age < 100)
 dim(loan_data)
-
 ```
-
 
 ```{r trans-subset-two-quiz}
 
@@ -840,7 +878,6 @@ question("What can you say about loan_data?",
          answer("The new data frame loan_data has one column less as expected."),
          answer("The new data frame loan_data has one observation less as expected.", correct = TRUE)
 )
-
 ```
 
 
@@ -850,47 +887,6 @@ question("What can you say about loan_data?",
 
 #### Exercise 1
 
-```{r prepare-modeling}
-
-# We will use 5 bins for emp_length and 5 bins for int_rate
-loan_data <- loan_data_raw %>%
-  mutate(
-    emp_bin = as.character(cut_number(emp_length, 5)),
-    int_bin = as.character(cut_number(int_rate, 5))
-  ) %>%
-  replace_na(list(emp_bin = "Missing", int_bin = "Missing")) %>%
-  mutate(
-    emp_bin = as.factor(emp_bin),
-    int_bin = as.factor(int_bin),
-    loan_status = as.factor(loan_status)
-  ) %>%
-  select(-emp_length, -int_rate)
-
-set.seed(42)
-index <- createDataPartition(loan_data$loan_status, p = 0.7, list = FALSE)
-training_set <- loan_data[index, ]
-test_set <- loan_data[-index, ]
-
-
-
-rpart_mod <- partial(rpart, 
-                     # Using priors
-                     parms = list(prior = c(0.7, 0.3)),
-                     control = rpart.control(cp = 0.001))
-
-# Building forest using downsampling
-randomForest_mod <- partial(randomForest, 
-                             ## Tell randomForest to sample by strata. Here, 
-                             ## that means within each class
-                             strata = training_set$loan_status,
-                             ## Now specify that the number of samples selected
-                             ## within each class should be the same
-                             sampsize = rep(sum(training_set$loan_status == 1), 2),
-                             mtry = 3)
-
-
-
-```
 
 We already split the original data set `loan_data` into a training set and test set for you. Both are available within the consoles now as `training_set` and `test_set`. The training set consists of 70% of the original data and the test set of 30% respectively. In the first exercise you will train a classification tree using the training set. 
 
@@ -902,8 +898,7 @@ Our response is `loan_status` and we would like to use all remaining variables a
 
 Now it is your turn: Create your first classification tree and assign it to a new variable `my_tree`.
 
-```{r model-tree, exercise=TRUE, exercise.setup="prepare-modeling"}
-
+```{r model-tree, exercise=TRUE}
 
 
 ```
@@ -911,7 +906,6 @@ Now it is your turn: Create your first classification tree and assign it to a ne
 ```{r model-tree-hint}
 
 my_tree <- rpart_mod(loan_status ~ ., data = training_set)
-
 ```
 
 ```{r model-tree-quiz}
@@ -921,7 +915,6 @@ question("Congrats! You just created your first machine learning model in R. But
          answer("I guess it is something magical."),
          answer("Your classifcation tree is an R object residing in memory.", correct = TRUE)
 )
-
 ```
 
 #### Exercise 2
@@ -930,15 +923,10 @@ Now it is time to take a closer look at the tree and by using the `prp()` functi
 
 ```{r prepare-plot-tree}
 
-# Prunning global my_tree
-my_tree <- prune_tree(my_tree)
-
+library(rpart.plot)
 ```
 
-
-
 ```{r plot-tree, exercise=TRUE, exercise.setup="prepare-plot-tree"}
-
 
 
 ```
@@ -951,7 +939,6 @@ question("Which variable was used for the first split?",
          answer("grade", correct = TRUE),
          answer("age")
 )
-
 ```
 
 #### Exercise 3
@@ -964,8 +951,7 @@ You just need to pass two arguments to the function exactly as before to `rpart_
 
 *Note:* This may take a little bit of time because the forest will consist of 500 trees.
 
-```{r model-forest, exercise=TRUE, exercise.setup="prepare-modeling"}
-
+```{r model-forest, exercise=TRUE}
 
 
 ```
@@ -973,7 +959,6 @@ You just need to pass two arguments to the function exactly as before to `rpart_
 ```{r model-forest-hint}
 
 my_forest <- randomForest_mod(loan_status ~ ., data = training_set)
-
 ```
 
 
@@ -984,10 +969,12 @@ You cannot plot the forest in the same manner like a single tree. For instance, 
 
 Pass `my_forest` to `varImpPlot()` in the console.
 
+```{r prepare-plot-forest}
 
+library(randomForest)
+```
 
-```{r plot-forest, exercise=TRUE}
-
+```{r plot-forest, exercise=TRUE, exercise.setup="prepare-plot-forest"}
 
 
 ```
@@ -999,7 +986,6 @@ question("Which variable was used the most for splits in the entire forest?",
          answer("grade"),
          answer("age")
 )
-
 ```
 
 ## Evaluating Models
@@ -1028,7 +1014,6 @@ Read and try to understand the code below. Afterwards just execute it.
 predict_forest <- predict(my_forest, newdata = test_set)
 table_forest <- table("Actual values" = test_set$loan_status, predictions = predict_forest)
 table_forest
-
 ```
 
 #### Exercise 2
@@ -1037,30 +1022,15 @@ Good, you just calculated predictions for the test set using the random forest m
 
 However, we created a little convenience function for you called `conf_kpis()` which just does this. Just pass the confusion matrix `table_forest` from the previous exercise to `conf_kpis` in the console below.  
 
-```{r prepare-conf-matrix}
 
-conf_kpis <- function(x) {
- accuracy <- sum(diag(x))/sum(x)
- specificity <- sum(x[1, 1]/sum(x[1, 1:2]))
- sensitivity <- sum(x[2, 2]/sum(x[2, 1:2]))
- list(accuracy = accuracy, specificity = specificity, sensitivity = sensitivity)
-}
+```{r calc-kpis, exercise=TRUE}
 
-
-```
-
-
-
-
-
-```{r calc-kpis, exercise=TRUE, exercise.setup="prepare-conf-matrix"}
 
 ```
 
 ```{r calc-kpis-hint}
 
 conf_kpis(table_forest)
-
 ```
 
 ```{r calc-kpis-quiz}
@@ -1070,7 +1040,6 @@ question("What is the sensitivity of the random forest model applied on the test
          answer("37 %", correct = TRUE),
          answer("76 %")
 )
-
 ```
 
 
@@ -1086,20 +1055,17 @@ Please execute the code below and take a look at the `tree_pmml` variable afterw
 
 **Note:** Do not try this for the random forest model here in the web application. It will time out and you won't receive a result because it actually takes several minutes to convert the entire forest to PMML.
 
-```{r pmml-prepare}
 
-my_tree <- prune_tree(my_tree)
+```{r prepare-pmml}
 
+library(pmml)
 ```
 
-
-```{r pmml, exercise = TRUE, exercise.setup="pmml-prepare"}
+```{r pmml, exercise = TRUE, exercise.setup="prepare-pmml"}
 
 tree_pmml <- pmml(my_tree, 
                  model.name = "Credit Risk Model",
                  description = "Decision tree calculating the probablity of default.")
-
-
 ```
 
 ```{r pmml-quiz}
@@ -1108,7 +1074,6 @@ question("What is stored in the tree_pmml variable?",
          answer("A JSON presentation of your classification tree"),
          answer("A XML represenation of your classification tree", correct = TRUE)
 )
-
 ```
 
 
@@ -1119,21 +1084,10 @@ Next, we will save the results to disk using the `saveXML()` function. You just 
 Now, please execute the code below in the console. It will save the PMML representation of the tree model `tree_pmml` you created in the previous exercise to your disk.
 
 
-```{r pmml-export-prepare}
-
-my_tree <- prune_tree(my_tree)
-tree_pmml <- pmml(my_tree, 
-                  model.name = "Credit Risk Model",
-                  description = "Decision tree calculating the probablity of default.")
-
-```
-
-
-```{r pmml-export, exercise=TRUE, exercise.setup="pmml-export-prepare"}
+```{r pmml-export, exercise=TRUE, exercise.setup="prepare-pmml"}
 
 saveXML(tree_pmml, file = file.path(my_working_directory, 
                                     "export", "credit_risk_classification_tree.xml"))
-
 ```
 
 **Note**: Normally, it would have been OK to specify the second argument to `saveXML()` like this: `file = "./export/credit_risk_classification_tree.xml`. However, each of the little consoles you used throughout the course runs in its own mini R process with a separate working directory somewhere in the temp folder hierarchy of your operating system. Therefore, we stored the working directory of the RStudio project in the `my_working_directory` variable during the startup of the web application. Like this, we were able to reference it later in order to store the xml file to the `/export` folder.
@@ -1151,6 +1105,5 @@ question("How many lines of code does the file have?",
          answer("Approximately 250", correct = TRUE),
          answer("Approximately, 800")
 )
-
 ```
 
