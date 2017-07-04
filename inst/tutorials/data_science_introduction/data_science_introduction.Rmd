@@ -1,5 +1,5 @@
 ---
-title: "Demystifying Machine Learning - Training Exercises"
+title: "Demystifying Data Science - Training Exercises"
 tutorial:
   version: 2.0
 author: Alexander Lemm
@@ -13,26 +13,8 @@ library(learnr)
 library(magrittr)
 library(ggplot2)
 
-
-##library(purrr)
-#library(dplyr)
-#library(tidyr)
-#library(randomForest)
-#library(rpart)
-#library(rpart.plot)
-#library(pmml)
-#library(caret)
-
-#library(dplyr)
-#library(tidyr)
-#library(randomForest)
-#library(rpart.plot)
-#library(pmml)
-
-
 tutorial_options(exercise.completion = TRUE)
 knitr::opts_chunk$set(echo = FALSE)
-#source("global.r")
 
 # Import data sets which should be made available globally ---------------------
 
