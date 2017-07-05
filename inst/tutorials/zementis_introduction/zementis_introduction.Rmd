@@ -1,0 +1,201 @@
+---
+title: "Zementis Introduction - Training Exercises"
+tutorial:
+  version: 1.0
+author: Alexander Lemm
+output: 
+  learnr::tutorial:
+runtime: shiny_prerendered
+---
+
+
+```{r setup, include=FALSE}
+library(learnr)
+library(httr)
+library(jsonlite)
+library(dplyr)
+
+tutorial_options(exercise.completion = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Model Deployment
+
+### Exercises
+
+#### Exercise 1
+
+Navigate to the Zementis demo server at https://myadapa.zementis.com/adapaconsole/console.jsf and log in using your credentials you received earlier via email.
+
+```{r deploy-one-quiz}
+
+question("How many prediction models were already uploaded to your instance and are available to you?",
+    answer("8"),
+    answer("3", correct = TRUE),
+    answer("1")
+  )
+
+
+```
+
+#### Exercise 2
+
+Now, it is time to upload a new prediction model: You will upload the credit risk model you created in the Data Science introduction course. 
+
+In your Zementis instance click on `Upload PMML Files` and select the credit risk model `credit_risk_classification_tree.xml` on your disk which resides in `/zementis_data_science_intro/data_science_intro_tutorial/export` (Of course, we can just provide the relative path here.)
+
+```{r deploy-two-quiz}
+
+question("What message is shown in the web console after uploading your model?",
+    answer("The provided file was uploaded successfully.", correct = TRUE),
+    answer("The provided PMML file was uploaded successfully.")
+  )
+
+
+```
+
+
+
+## Predicting New Values
+
+### Exercises
+
+#### Exercise 1
+
+In your Zementis server instance navigate to `Score/Classify Data`. Select your credit risk model from the model list. Next, upload `loan_data_new.csv` which resides in `./zementis_basic_product_intro/zementis_basic_product_tutorial/data` on your disk.
+
+```{r predict-upload-one-quiz}
+
+question("According to the predictions would you accept the loan request of the first applicant?",
+    answer("The model scored 0 for the first applicant. So we would accept the request."),
+    answer("The model scored 1 for the first applicant, so we would deny the request.", correct = TRUE)
+  )
+
+
+```
+
+#### Exercise 2
+
+**Note**: To answer this question properly you might need to modify the settings so that all prediction results are shown on screen and not just the first 10.
+
+```{r predict-upload-two-quiz}
+
+question("According to the predictions would you accept the loan request of the last applicant?",
+    answer("The model scored 0 for the last applicant. So we would accept the request.", correct = TRUE),
+    answer("The model scored 1 for the last applicant, so we would deny the request.")
+  )
+
+
+```
+
+
+
+#### Exercise 3
+
+In this exercise you will use the embedded REST API client on the server which is part of the API documentation to test a single GET request
+
+* In your browser, please navigate to the REST API page at https://myadapa.zementis.com/adapars/ and enter your credentials
+* On the page, please open the `GET /apply/{model_name}` section which describes how to score a single instance via the REST API
+* In the `model name` window please enter `Credit Risk Model`
+* Copy the JSON code you see below to the `record` window:
+
+```
+{
+    "loan_amnt": 5000,
+    "grade": "G",
+    "home_ownership": "MORTGAGE",
+    "annual_inc": 250000,
+    "age": 30,
+    "emp_bin": "[0,1]",
+    "int_bin": "(7.51,10.2]"
+}
+
+```
+
+* Click on `Try it out`
+
+```{r predict-rest-one-quiz}
+
+question("Check out the prediction returned from the server. Would you accept this loan request?",
+    answer("The model predicted that the loan will be paid back. We would accept the request."),
+    answer("The model predicted that the loan won't be paid back, We would not accept the request.", correct = TRUE)
+  )
+
+
+```
+
+
+
+#### Exercise 4
+
+Now, you will use an external REST API client to send a GET request to your EC2 instance. Luckily, we can use the R console below for this. The code in the console below represents a very lean client and will send a loan request of a single applicant to your server using GET. 
+
+Before clicking on `Run Code` in the console, please add your Zementis server credentials to the GET request otherwise you won't receive any results.
+
+
+```{r predict-rest-client, exercise=TRUE}
+
+body <- '{
+    "loan_amnt": 5000,
+    "grade": "A",
+    "home_ownership": "MORTGAGE",
+    "annual_inc": 250000,
+    "age": 30,
+    "emp_bin": "[0,1]",
+    "int_bin": "(7.51,10.2]"
+}'
+
+GET("https://myadapa.zementis.com:443/adapars/apply/Credit%20Risk%20Model",
+    authenticate("YOUR_USERNAME", "YOUR_PASSWORD"),
+    query = list(record = body),
+    content_type_json()) %>% content(as = "parsed") %>% toJSON(pretty = TRUE) 
+
+```
+
+
+```{r predict-rest-client-quiz}
+
+question("Check out the prediction returned from the server. Would you accept this loan request?",
+    answer("The model predicted that the loan will be paid back. We would accept the request.", correct = TRUE),
+    answer("The model predicted that the loan won't be paid back, We would not accept the request.")
+  )
+
+
+```
+
+
+#### Exercise 5
+
+Go ahead and install the Zementis Excel Add-In on your machine. You should have received the respective instructions and the installation file earlier via email.
+
+#### Exercise 6
+
+In this final exercise you will send the entire loan request data included in `plugin_data.xlsx` which resides in `./zementis_basic_product_intro/zementis_basic_product_tutorial/data` to the server.
+
+* Open `plugin_data.xlsx` on your machine using Excel
+* Navigate to the `Predict with ADAPA` tab
+* Please enter the respective data under `Setup connection`(Go with the default URL by clicking on `Use demo`)
+* Select the entire data of the sheet
+* Choose the credit risk model in the `Apply Model` section and send the data to the Zementis server
+
+
+```{r predict-excel-quiz}
+quiz(
+  question("Would you accept the loan request of the 12th applicant?",
+           answer("The model predicted that the loan will be paid back. We would accept
+                  the request."),
+           answer("The model predicted that the loan won't be paid back, We would no
+                  accept the request.", correct = TRUE)
+  ),
+    question("Would you accept the loan request of the 6th applicant?",
+           answer("The model predicted that the loan will be paid back. We would accept
+                  the request.", correct = TRUE),
+           answer("The model predicted that the loan won't be paid back, We would no
+                  accept the request.")
+  )
+  
+)
+
+
+```
+

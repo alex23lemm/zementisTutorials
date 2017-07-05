@@ -2,7 +2,7 @@
 zementisTutorials
 =================
 
-The goal of zementisTutorials is to ...
+zementisTutorials offeres several tutorials around data science, Zementis, and PMML.
 
 Installation
 ------------
@@ -17,3 +17,23 @@ devtools::install_github("alex23lemm/zementisTutorials")
 
 Usage
 -----
+
+The following courses are currently offered via zementisTutorials and can be executed using the learnr package:
+
+**De-mystifying Data Science**
+
+The course introduces the data science process and common analytics terminology hands-on using R. Students will solve a real-world data science problem on their own.
+
+``` r
+
+learnr::run_tutorial("data_science_introduction", package = "zementisTutorials")
+```
+
+**Zementis - The Basis**
+
+Basic introduction to Zementis Server from an end-user perspective.
+
+``` r
+
+ learnr::run_tutorial("zementis_introduction", package = "zementisTutorials")
+```
