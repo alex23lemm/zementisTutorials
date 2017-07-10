@@ -2,6 +2,11 @@
 zementisTutorials
 =================
 
+[![Build Status](https://travis-ci.org/alex23lemm/zementisTutorials.svg?branch=master)](https://travis-ci.org/alex23lemm/zementisTutorials)
+
+Overview
+--------
+
 zementisTutorials offeres several tutorials around data science, Zementis, and PMML.
 
 Installation
