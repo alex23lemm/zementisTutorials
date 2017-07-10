@@ -40,9 +40,9 @@ question("How many prediction models were already uploaded to your instance and 
 
 #### Exercise 2
 
-Now, it is time to upload a new prediction model: You will upload the credit risk model you created in the Data Science introduction course. 
+Now, it is time to upload a new prediction model: You will upload the credit risk model you created in the Demystifying Data Science course. 
 
-In your Zementis instance click on `Upload PMML Files` and select the credit risk model `credit_risk_classification_tree.xml` on your disk which resides in `/zementis_data_science_intro/data_science_intro_tutorial/export` (Of course, we can just provide the relative path here.)
+In your Zementis instance click on `Upload PMML Files` and select the credit risk model `credit_risk_classification_tree.xml` on your disk which resides in `~/DDS_course_export`. 
 
 ```{r deploy-two-quiz}
 
@@ -54,15 +54,22 @@ question("What message is shown in the web console after uploading your model?",
 
 ```
 
-
-
 ## Predicting New Values
 
 ### Exercises
 
 #### Exercise 1
 
-In your Zementis server instance navigate to `Score/Classify Data`. Select your credit risk model from the model list. Next, upload `loan_data_new.csv` which resides in `./zementis_basic_product_intro/zementis_basic_product_tutorial/data` on your disk.
+In your Zementis server instance navigate to `Score/Classify Data`. Select your credit risk model from the model list. Next, upload `loan_data_new.csv` which is part of the `zementisTutorials` package. Execute the code in the console below which will return the path to the CSV file on your disk:
+
+```{r path-to-loan-data, exercise=TRUE}
+
+system.file("tutorials/zementis_introduction/data", package = "zementisTutorials")
+```
+
+
+
+
 
 ```{r predict-upload-one-quiz}
 
@@ -170,7 +177,15 @@ Go ahead and install the Zementis Excel Add-In on your machine. You should have 
 
 #### Exercise 6
 
-In this final exercise you will send the entire loan request data included in `plugin_data.xlsx` which resides in `./zementis_basic_product_intro/zementis_basic_product_tutorial/data` to the server.
+In this final exercise you will send the entire loan request data included in `plugin_data.xlsx` which is part of the `zementisTutorials` package.
+
+Execute the code in the console below which will return the path to the Excel file on your disk:
+
+```{r path_to_excel_file, exercise=TRUE}
+
+system.file("tutorials/zementis_introduction/data", package = "zementisTutorials")
+```
+
 
 * Open `plugin_data.xlsx` on your machine using Excel
 * Navigate to the `Predict with ADAPA` tab
