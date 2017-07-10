@@ -7,7 +7,7 @@ zementisTutorials
 Overview
 --------
 
-zementisTutorials offeres several tutorials around data science, Zementis, and PMML.
+zementisTutorials offers several tutorials around data science, Zementis, and PMML.
 
 Installation
 ------------
