@@ -5,7 +5,7 @@ Authors@R: person("Alex", "Lemm", email = "alex23lemm@gmail.com", role = c("aut"
 Description: The package offers several tutorials in the domain of data science, Zementis, and PMML.
   Students will gain a general understanding of the entire data science process. In addition, they 
   will learn how to operationalize their analytics setup with Zementis Server and PMML.
-Depends: R (>= 3.4.1)
+Depends: R (>= 3.4.0)
 License: CC0
 Encoding: UTF-8
 LazyData: true
