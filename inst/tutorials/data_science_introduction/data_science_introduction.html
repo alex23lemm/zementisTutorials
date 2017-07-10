@@ -895,15 +895,17 @@ table_forest</code></pre>
 <p>Next, we will save the results to disk using the <code>saveXML()</code> function. You just need to pass two arguments to <code>saveXML()</code>: the R object representing a XML document and the name of the file (including the absolute or relative path to it) to which we would like to save the XML document.</p>
 <p>Now, please execute the code below in the console. It will save the PMML representation of the tree model <code>tree_pmml</code> you created in the previous exercise to your disk.</p>
 <div class="tutorial-exercise" data-label="pmml-export" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>saveXML(tree_pmml, file = file.path(my_working_directory, 
-                                    &quot;export&quot;, &quot;credit_risk_classification_tree.xml&quot;))</code></pre>
+<pre class="text"><code>dir.create(file.path(path.expand(&quot;~&quot;), &quot;DDS_course_export&quot;))
+
+saveXML(tree_pmml, file = file.path(path.expand(&#39;~&#39;), 
+                                    &quot;DDS_course_export&quot;, &quot;credit_risk_classification_tree.xml&quot;))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"prepare-pmml","exercise.checker":"NULL"}</script>
 </div>
-<p><strong>Note</strong>: Normally, it would have been OK to specify the second argument to <code>saveXML()</code> like this: <code>file = &quot;./export/credit_risk_classification_tree.xml</code>. However, each of the little consoles you used throughout the course runs in its own mini R process with a separate working directory somewhere in the temp folder hierarchy of your operating system. Therefore, we stored the working directory of the RStudio project in the <code>my_working_directory</code> variable during the startup of the web application. Like this, we were able to reference it later in order to store the xml file to the <code>/export</code> folder.</p>
+<p><strong>Note</strong>: Normally, it would have been OK to specify the second argument to <code>saveXML()</code> like this in your RStudio session: <code>file = &quot;./DDS_course_export/credit_risk_classification_tree.xml</code>. However, each of the little consoles you used throughout the course runs in its own mini R process with a separate working directory somewhere in the temp folder hierarchy of your operating system. Therefore, we stored the XML file in the <code>DDS_course_export</code> folder in your home directory. We will reference this folder also in the next course.</p>
 </div>
 <div id="section-exercise-3-3" class="section level4">
 <h4>Exercise 3</h4>
-<p>In RStudio go to the <code>Files</code> tab and navigate to <code>./data_science_intro_tutorial/export</code>. Verify that the PMML file <code>credit_risk_classification_tree.xml</code> was created and check out its time stamp. Click on it so that it opens in the source pane</p>
+<p>In RStudio click on <code>File</code> in the upper left corner and choose <code>Open File...</code>. Navigate to <code>~/DDS_course_export/</code> and open <code>credit_risk_classification_tree.xml</code>. Verify that the PMML file was created and check out its time stamp. Click on it so that it opens in the source pane.</p>
 
 <div id="htmlwidget-f2be4c673a22a80806f7" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
@@ -927,12 +929,6 @@ knitr::opts_chunk$set(echo = FALSE)
 
 loan_data_raw <- readRDS("./www/loan_data_raw.rds")
 #loan_data_raw <- readRDS("./data_science_intro_tutorial/www/loan_data_raw.rds")
-
-# Store path to working directory to variable during startup. This will
-# make sure that we can export the PMML representation of the model later to the
-# actual project directory. Otherwise it would be exported to a tmp folder since
-# all consoles run in their own separate processes.
-my_working_directory <- getwd()
 
 
 # Create functions and variables for specfic exercise chapters -----------------

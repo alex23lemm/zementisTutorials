@@ -21,12 +21,6 @@ knitr::opts_chunk$set(echo = FALSE)
 loan_data_raw <- readRDS("./www/loan_data_raw.rds")
 #loan_data_raw <- readRDS("./data_science_intro_tutorial/www/loan_data_raw.rds")
 
-# Store path to working directory to variable during startup. This will
-# make sure that we can export the PMML representation of the model later to the
-# actual project directory. Otherwise it would be exported to a tmp folder since
-# all consoles run in their own separate processes.
-my_working_directory <- getwd()
-
 
 # Create functions and variables for specfic exercise chapters -----------------
 
@@ -1068,16 +1062,18 @@ Now, please execute the code below in the console. It will save the PMML represe
 
 ```{r pmml-export, exercise=TRUE, exercise.setup="prepare-pmml"}
 
-saveXML(tree_pmml, file = file.path(my_working_directory, 
-                                    "export", "credit_risk_classification_tree.xml"))
+dir.create(file.path(path.expand("~"), "DDS_course_export"))
+
+saveXML(tree_pmml, file = file.path(path.expand('~'), 
+                                    "DDS_course_export", "credit_risk_classification_tree.xml"))
 ```
 
-**Note**: Normally, it would have been OK to specify the second argument to `saveXML()` like this: `file = "./export/credit_risk_classification_tree.xml`. However, each of the little consoles you used throughout the course runs in its own mini R process with a separate working directory somewhere in the temp folder hierarchy of your operating system. Therefore, we stored the working directory of the RStudio project in the `my_working_directory` variable during the startup of the web application. Like this, we were able to reference it later in order to store the xml file to the `/export` folder.
+**Note**: Normally, it would have been OK to specify the second argument to `saveXML()` like this in your RStudio session: `file = "./DDS_course_export/credit_risk_classification_tree.xml`. However, each of the little consoles you used throughout the course runs in its own mini R process with a separate working directory somewhere in the temp folder hierarchy of your operating system. Therefore, we stored the XML file in the `DDS_course_export` folder in your home directory. We will reference this folder also in the next course.
 
 
 #### Exercise 3
 
-In RStudio go to the `Files` tab and navigate to `./data_science_intro_tutorial/export`. Verify that the PMML file `credit_risk_classification_tree.xml` was created and check out its time stamp. Click on it so that it opens in the source pane
+In RStudio click on `File` in the upper left corner and choose `Open File...`. Navigate to `~/DDS_course_export/` and open `credit_risk_classification_tree.xml`. Verify that the PMML file was created and check out its time stamp. Click on it so that it opens in the source pane.
 
 
 ```{r pmml-export-quiz}
