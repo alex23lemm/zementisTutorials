@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 # zementisTutorials
 
 [![Build Status](https://travis-ci.org/alex23lemm/zementisTutorials.svg?branch=master)](https://travis-ci.org/alex23lemm/zementisTutorials)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/alex23lemm/zementisTutorials?branch=master&svg=true)](https://ci.appveyor.com/project/alex23lemm/zementisTutorials)
 
 ## Overview
 
