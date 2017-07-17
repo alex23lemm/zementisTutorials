@@ -774,7 +774,7 @@ qplot(loan_amnt , data = loan_data_raw, geom = "density", facets  = ~ grade)
 ```{r eda-qplot-loan_amnt-four-quiz}
 
 question("Do you spot a difference in loan amount variation across people with different bureau scores?",
-         answer("Yes, there is a difference. People with a higher bureau score who are less creditworthy tend to apply for loan amounts.", correct = TRUE),
+         answer("Yes, there is a difference. People with a higher bureau score who are less creditworthy tend to apply for higher loan amounts.", correct = TRUE),
          answer("No, there is no obvious difference in loan amount distribution across the groups."),
          answer("Yes, there is a difference. People with a lower bureau score who are more creditworthy tend to apply for higher credits.")
 )
