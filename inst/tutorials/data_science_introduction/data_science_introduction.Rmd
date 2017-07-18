@@ -19,7 +19,6 @@ knitr::opts_chunk$set(echo = FALSE)
 # Import data sets which should be made available globally ---------------------
 
 loan_data_raw <- readRDS("./www/loan_data_raw.rds")
-#loan_data_raw <- readRDS("./data_science_intro_tutorial/www/loan_data_raw.rds")
 
 
 # Create functions and variables for specfic exercise chapters -----------------
@@ -384,7 +383,7 @@ OK, in the following 3 exercises we just gonna have some fun using the Star Wars
 library(httr)
 
 parse_sw_people <- function(x) {
-  x %>% httr::content(as = "text") %>% 
+  x %>% httr::content(as = "text", encoding = "UTF-8") %>% 
     jsonlite::fromJSON() %>% 
     .[["results"]] %>% 
     .[, 1:8] %>% 
