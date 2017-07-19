@@ -1,7 +1,7 @@
 ---
 title: "Zementis Introduction - Training Exercises"
 tutorial:
-  version: 1.0
+  version: 1.1
 author: Alexander Lemm
 output: 
   learnr::tutorial:
@@ -34,15 +34,14 @@ question("How many prediction models were already uploaded to your instance and 
     answer("3", correct = TRUE),
     answer("1")
   )
-
-
 ```
 
 #### Exercise 2
 
 Now, it is time to upload a new prediction model: You will upload the credit risk model you created in the Demystifying Data Science course. 
 
-In your Zementis instance click on `Upload PMML Files` and select the credit risk model `credit_risk_classification_tree.xml` on your disk which resides in `~/DDS_course_export`. 
+In your Zementis instance click on `Upload PMML Files` and select the credit risk model `credit_risk_classification_tree.xml` on your disk which resides in `~/DDS_course_export`.
+
 
 ```{r deploy-two-quiz}
 
@@ -50,8 +49,6 @@ question("What message is shown in the web console after uploading your model?",
     answer("The provided file was uploaded successfully.", correct = TRUE),
     answer("The provided PMML file was uploaded successfully.")
   )
-
-
 ```
 
 ## Predicting New Values
@@ -60,15 +57,24 @@ question("What message is shown in the web console after uploading your model?",
 
 #### Exercise 1
 
-In your Zementis server instance navigate to `Score/Classify Data`. Select your credit risk model from the model list. Next, upload `loan_data_new.csv` which is part of the `zementisTutorials` package. Execute the code in the console below which will return the path to the CSV file on your disk:
+Download `loan_data_new.csv` which is part of the `zementisTutorials` package by clicking on the following link: `r downloadLink("downloadCSV", "Get CSV file")`
 
-```{r path-to-loan-data, exercise=TRUE}
 
-system.file("tutorials/zementis_introduction/data", package = "zementisTutorials")
+```{r download-csv, context="server"}
+
+file_name <- "loan_data_new.csv"
+
+output$downloadCSV <- downloadHandler(
+  filename = file_name,
+  content = function(file) {
+    file.copy(file.path( system.file("tutorials/zementis_introduction/data", package = "zementisTutorials"), 
+      file_name), 
+      file)
+  }
+)
 ```
 
-
-
+In your Zementis server instance navigate to `Score/Classify Data`. Select your credit risk model from the model list. Next, upload `loan_data_new.csv` to the Zementis server.
 
 
 ```{r predict-upload-one-quiz}
@@ -77,8 +83,6 @@ question("According to the predictions would you accept the loan request of the 
     answer("The model scored 0 for the first applicant. So we would accept the request."),
     answer("The model scored 1 for the first applicant, so we would deny the request.", correct = TRUE)
   )
-
-
 ```
 
 #### Exercise 2
@@ -91,8 +95,6 @@ question("According to the predictions would you accept the loan request of the 
     answer("The model scored 0 for the last applicant. So we would accept the request.", correct = TRUE),
     answer("The model scored 1 for the last applicant, so we would deny the request.")
   )
-
-
 ```
 
 
@@ -127,8 +129,6 @@ question("Check out the prediction returned from the server. Would you accept th
     answer("The model predicted that the loan will be paid back. We would accept the request."),
     answer("The model predicted that the loan won't be paid back, We would not accept the request.", correct = TRUE)
   )
-
-
 ```
 
 
@@ -156,7 +156,6 @@ GET("https://myadapa.zementis.com:443/adapars/apply/Credit%20Risk%20Model",
     authenticate("YOUR_USERNAME", "YOUR_PASSWORD"),
     query = list(record = body),
     content_type_json()) %>% content(as = "parsed") %>% toJSON(pretty = TRUE) 
-
 ```
 
 
@@ -166,8 +165,6 @@ question("Check out the prediction returned from the server. Would you accept th
     answer("The model predicted that the loan will be paid back. We would accept the request.", correct = TRUE),
     answer("The model predicted that the loan won't be paid back, We would not accept the request.")
   )
-
-
 ```
 
 
@@ -179,19 +176,26 @@ Go ahead and install the Zementis Excel Add-In on your machine. You should have 
 
 In this final exercise you will send the entire loan request data included in `plugin_data.xlsx` which is part of the `zementisTutorials` package.
 
-Execute the code in the console below which will return the path to the Excel file on your disk:
-
-```{r path_to_excel_file, exercise=TRUE}
-
-system.file("tutorials/zementis_introduction/data", package = "zementisTutorials")
-```
-
-
+* Download `plugin_data.xlsx` by clicking on the following link: `r downloadLink("downloadExcel", "Get Excel")`
 * Open `plugin_data.xlsx` on your machine using Excel
 * Navigate to the `Predict with ADAPA` tab
 * Please enter the respective data under `Setup connection`(Go with the default URL by clicking on `Use demo`)
 * Select the entire data of the sheet
 * Choose the credit risk model in the `Apply Model` section and send the data to the Zementis server
+
+```{r download-excel, context="server"}
+
+file_name <- "plugin_data.xlsx"
+
+output$downloadExcel <- downloadHandler(
+  filename = file_name,
+  content = function(file) {
+    file.copy(file.path( system.file("tutorials/zementis_introduction/data", package = "zementisTutorials"), 
+      file_name), 
+      file)
+  }
+)
+```
 
 
 ```{r predict-excel-quiz}
@@ -210,7 +214,5 @@ quiz(
   )
   
 )
-
-
 ```
 
