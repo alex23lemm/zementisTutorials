@@ -185,13 +185,13 @@ In this final exercise you will send the entire loan request data included in `p
 
 ```{r download-excel, context="server"}
 
-file_name <- "plugin_data.xlsx"
+excel_name <- "plugin_data.xlsx"
 
 output$downloadExcel <- downloadHandler(
-  filename = file_name,
+  filename = excel_name,
   content = function(file) {
     file.copy(file.path( system.file("tutorials/zementis_introduction/data", package = "zementisTutorials"), 
-      file_name), 
+      excel_name), 
       file)
   }
 )

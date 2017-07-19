@@ -1,6 +1,6 @@
 Package: zementisTutorials
 Title: Data Science and Zementis tutorials based on R, Zementis, and PMML 
-Version: 0.2
+Version: 0.3
 Authors@R: person("Alex", "Lemm", email = "alex23lemm@gmail.com", role = c("aut", "cre"))
 Description: The package offers several tutorials in the domain of data science, Zementis, and PMML.
   Students will gain a general understanding of the entire data science process. In addition, they 
