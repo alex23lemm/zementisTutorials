@@ -174,7 +174,7 @@ Go ahead and install the Zementis Excel Add-In on your machine. You should have 
 
 #### Exercise 6
 
-In this final exercise you will send the entire loan request data included in `plugin_data.xlsx` which is part of the `zementisTutorials` package.
+In this final exercise you will send the entire loan request data included in `plugin_data.xlsx` which is part of the `zementisTutorials` package to the Zementis server.
 
 * Download `plugin_data.xlsx` by clicking on the following link: `r downloadLink("downloadExcel", "Get Excel")`
 * Open `plugin_data.xlsx` on your machine using Excel
