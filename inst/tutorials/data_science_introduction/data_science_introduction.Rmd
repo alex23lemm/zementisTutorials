@@ -1,7 +1,7 @@
 ---
 title: "Demystifying Data Science - Training Exercises"
 tutorial:
-  version: 2.0
+  version: 2.1
 author: Alexander Lemm
 output: learnr::tutorial
 runtime: shiny_prerendered
@@ -408,7 +408,7 @@ people <- GET("http://swapi.co/api/people/") %>% parse_sw_people
 
 ```{r sw-bmi-people-quiz}
 
-question("Information on how many characters is stored in the people data frame?",
+question("Information on how many Star Wars characters is stored in the people data frame?",
     answer("9"),
     answer("18"),
     answer("10", correct = TRUE)
