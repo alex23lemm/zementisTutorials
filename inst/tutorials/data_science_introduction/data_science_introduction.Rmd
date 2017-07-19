@@ -126,6 +126,37 @@ But enough theory for now, time to practice. In the following exercises you will
 
 #### Exercise 1
 
+First things first: Welcome to the R console! R comes with a command line interface whose input is interpreted right away. The command line interpreter can even be used as a simple calculator.
+
+Try it out yourself and type simple commands like `2+3` or `4*4` in the console below. Press `Run Code` afterwards and check out the interpreter's answer.
+
+```{r basic-clac, exercise=TRUE}
+
+```
+
+
+#### Exercise 2
+
+You can assign single values or the result of a calculation/function call to a variable using the assignment operator `<-`. Yes, your eyes didn't trick you: It is really `<-` and not `=` in R.
+
+Just typing the variable name at the console (plus pressing `Run Code`) will print the variable's content to the console.
+
+Give it a try and click on `Run Code` in the console below which will execute the entire code block. Play around with the variable assignemnts and the printing a little bit by inserting different values or by even adding new variables.
+
+
+
+```{r assignment, exercise=TRUE}
+
+a <- 4 + 4
+b <- 3
+a
+b
+a + b
+```
+
+
+#### Exercise 3
+
 Every R session comes with a bunch of data sets which are directly available even though the user didn't load them explicitly into memory. We will take advantage of that fact and take a closer look at the `mtcars` data set. The data set was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and aspects of automobile design and performance for several automobiles (1973–74 models).
 
 In the console below type `mtcars` and hit CTRL + Enter or click on the 'Run Code' button. This will print the content of the data set to the console. 
@@ -136,7 +167,7 @@ In the console below type `mtcars` and hit CTRL + Enter or click on the 'Run Cod
 ```
 
 
-#### Exercise 2
+#### Exercise 4
 
 Check out the class of the mtcars object by typing `class(mtcars)`
 
@@ -157,7 +188,7 @@ question("What is the class of the mtcars object?",
 ```
 
 
-#### Exercise 3
+#### Exercise 5
 
 Usually, you would not print the entire content of a data frame to the console like you did it in exercise 1. Instead, you would use the `head()` and `tail()` function to get a first glimpse on the data. By default, they return the first and respectively last 6 rows of a data frame. Try out both functions with the `mtcars` data frame below. 
 
@@ -167,7 +198,7 @@ Usually, you would not print the entire content of a data frame to the console l
 ```
 
 
-#### Exercise 4
+#### Exercise 6
 
 To get some information about the data frame's dimensions you can use `nrow()`, `ncol()`, and `dim()`. Before trying out all three functions in the console below, think a few seconds about them. What do you expect them to return?
 
@@ -186,7 +217,7 @@ question("Of how many rows and columns does the mtcars data frame consist?",
 ```
 
 
-#### Exercise 5
+#### Exercise 7
 
 One or perhaps THE most important function in R is `str()` which shows you the structure of an object. Try it out with the `mtcars` data frame.
 
@@ -204,7 +235,7 @@ One or perhaps THE most important function in R is `str()` which shows you the s
 * a list of names of the columns including their type and their primary values 
 
 
-#### Exercise 6
+#### Exercise 8
 
 You can access an individual column of a specific data frame object, for instance named `my_data_frame`, using the `$` operator: `my_data_frame$desired_column`. 
 
@@ -217,11 +248,11 @@ mtcars$mpg
 ```
  
 
-#### Exercise 7
+#### Exercise 9
 
-If you like to assign a data frame column's content to a new variable you have to type the following: `new_vector <- my_data_frame$column_name`. Yes, your eyes didn't trick you. Instead of `=`, R uses `<-` as its assignment operator.
+If you like to assign a data frame column's content to a new variable you have to type the following: `new_vector <- my_data_frame$column_name`. 
 
-In the console below we give you a small example. Go ahead and execute the code. Afterwards, assign the the cylinder column to a new variable `my_cyl` and print it to the console. Compare this output with `mtcars$cyl`.
+In the console below we give you a small example. Go ahead and execute the code. Afterwards, assign the the cylinder column to a new variable `my_cyl` and print it to the console. 
 
 ```{r mtcars-assignment, exercise=TRUE}
 
@@ -661,7 +692,7 @@ question("The range of values on the x-axis is fairly wide. What is the reason f
 )
 ```
 
-### Exercise 7
+#### Exercise 7
 
 As you might remember from the lecture, a histogram is built by creating intervals ("bins") of a fixed length and then  by counting how many values fall into each interval. The shape of the histogram, however, is strongly dependend on the selected bin length.
 
