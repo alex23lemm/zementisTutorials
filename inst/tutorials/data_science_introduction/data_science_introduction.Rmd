@@ -661,10 +661,34 @@ question("The range of values on the x-axis is fairly wide. What is the reason f
 )
 ```
 
+### Exercise 7
+
+As you might remember from the lecture, a histogram is built by creating intervals ("bins") of a fixed length and then  by counting how many values fall into each interval. The shape of the histogram, however, is strongly dependend on the selected bin length.
+
+Try it out yourself with the slider below. By choosing a different bin width you automatically modify the shape of the histogram.
+
+```{r plot-histogram,  echo=FALSE}
+
+sliderInput("bins", "Bin width:", min = 1, max = 20, value = 5)
+plotOutput("histPlot")
+```
+
+```{r create-histogram, context="server"}
+
+output$histPlot <- renderPlot(
+  ggplot(aes(age), data = loan_data_raw) + 
+    geom_histogram(color = "white", fill = "red", binwidth = input$bins) +
+    theme(
+      axis.text = element_text(size = 12),
+      axis.title = element_text(size = 14)
+  )
+)
+```
+
+The take home message here is the following: Even when doing simple plots, you need to carefully examine different plot options to gain a better understanding about the underlying data and patterns in the data.
 
 
-
-#### Exercise 7
+#### Exercise 8
 
 One nice trick to take a closer look at the outliers of a single variable is a scatterplot. A scatterplot is a graph of plotted points that show the relationship between two variables. However, for outlier detection we can use a scatterplot with a single variable which will be plotted on the y-axis. On the x-axis we will just plot the number of the respective observation in the data set. 
 
@@ -693,7 +717,7 @@ question("How many obvious age outliers could you spot?",
 
 
 
-#### Exercise 8
+#### Exercise 9
 
 The last variable we will examine is `loan_amnt`. Go ahead and create a histogram for `loan_amnt`.
 
@@ -707,7 +731,7 @@ The last variable we will examine is `loan_amnt`. Go ahead and create a histogra
 qplot(loan_amnt , data = loan_data_raw, geom = "histogram")
 ```
 
-#### Exercise 9
+#### Exercise 10
 
 As an analyst you might be interested if the amount of credit people applied for differs between persons who defaulted and who did not. A very easy way to do this is to map a group variable to the `fill` or `colour` parameter in the `qplot()` call. 
 
@@ -725,7 +749,7 @@ qplot(loan_amnt , data = loan_data_raw, geom = "histogram", fill = as.factor(loa
 ```
 
 
-#### Exercise 10
+#### Exercise 11
 
 It is impossible to see if there is a real difference between the two groups when looking at the previous plot because the y-axis shows the absolute number of counts. Since there are many more people in the data set who paid their credit back you are not able to spot a difference in variation between the two groups.
 
@@ -751,7 +775,7 @@ question("Do you spot an obvious difference in variation of loan_amnt between po
 )
 ```
 
-#### Exercise 11
+#### Exercise 12
 
 OK, the last exercise showed that there does not seem to be an obvious difference in loan amount variation between the groups of people who defaulted and who did not. 
 
