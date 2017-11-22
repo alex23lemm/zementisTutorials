@@ -694,7 +694,7 @@ question("The range of values on the x-axis is fairly wide. What is the reason f
 
 #### Exercise 7
 
-As you might remember from the lecture, a histogram is built by creating intervals ("bins") of a fixed length and then  by counting how many values fall into each interval. The shape of the histogram, however, is strongly dependend on the selected bin length.
+As you might remember from the lecture, a histogram is built by creating intervals ("bins") of a fixed length and then  by counting how many values fall into each interval. The shape of the histogram, however, is strongly dependent on the selected bin length.
 
 Try it out yourself with the slider below. By choosing a different bin width you automatically modify the shape of the histogram.
 
