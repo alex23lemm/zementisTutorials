@@ -22,5 +22,6 @@ Imports: httr,
     pmml,
     jsonlite,
     learnr,
-    magrittr
+    magrittr,
+    xml2
 RoxygenNote: 6.0.1
