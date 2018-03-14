@@ -1,10 +1,10 @@
 ---
 title: "Zementis Introduction - Training Exercises"
 tutorial:
-  version: 1.1
+  version: 1.2
 author: Alexander Lemm
 output: 
-  learnr::tutorial:
+  learnr::tutorial
 runtime: shiny_prerendered
 ---
 

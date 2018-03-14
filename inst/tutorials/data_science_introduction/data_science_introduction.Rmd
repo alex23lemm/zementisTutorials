@@ -1,11 +1,14 @@
 ---
 title: "Demystifying Data Science - Training Exercises"
 tutorial:
-  version: 2.1
+  version: 2.2
 author: Alexander Lemm
-output: learnr::tutorial
+output: 
+  learnr::tutorial
 runtime: shiny_prerendered
 ---
+
+
 
 ```{r setup, include=FALSE}
 
