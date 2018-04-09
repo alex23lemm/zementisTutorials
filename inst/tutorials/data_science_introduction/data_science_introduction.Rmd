@@ -923,11 +923,11 @@ question("What can you say about loan_data?",
 
 We already split the original data set `loan_data` into a training set and test set for you. Both are available within the consoles now as `training_set` and `test_set`. The training set consists of 70% of the original data and the test set of 30% respectively. In the first exercise you will train a classification tree using the training set. 
 
-For building trees in R you use the `rpart()` function. Since `rpart()` comes with a lot of arguments which might be a bit overwhelming for beginners you will use the function `rpart_mod()`. It is just a modified version of `rpart()` we created for you with pre-filled arguments. 
+For building trees in R you use the `rpart()` function. Since `rpart()` comes with a lot of arguments which might be a bit overwhelming for beginners you will use the function `rpart_mod()`. It is just a modified version of `rpart()` we created for you with pre-filled arguments. Therefore, you just need to specify the first two arguments and pass them to `rpart_mod`. 
 
-Therefore, you just need to specify two arguments and pass them to `rpart_mod`. The first argument is a formula specifying the response (dependent variable) and the independent variables which should go into the model. The so-called formula interface to certain functions in R looks a bit weird because you have to use the "~" sign as you will see below.
+The **first argument** is a formula specifying the response (dependent variable) and the predictor variables (independent variables) which should go into the model building. The so called formula argument is often used as the primary argument in functions for building ML models and has the following general form: *formula = response variable ~ predictor variables*. The "*~*" sign is read as *"is modeled as function of"*. Our response is `loan_status` and we would like to use all remaining variables as independent variables. Instead of specifying all remaining variables individually, you can use the handy shortcut "*.*" for saying *"all other variables"*. Therefore, the first argument looks as follows `loan_status ~ .` and is read as *"loan status modeled as a function of all other variables"*.
 
-Our response is `loan_status` and we would like to use all remaining variables as independent variables. Therefore **the first argument** looks as follows: `loan_status ~ .` "**.**" is just a shortcut for saying "all other variables". **The second argument** is the data the model should use for training: `data = training_set`.
+**The second argument** is the data the model should use for training: `data = training_set`.
 
 Now it is your turn: Create your first classification tree and assign it to a new variable `my_tree`.
 
