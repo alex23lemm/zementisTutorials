@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 #### Exercise 1
 
-Navigate to the Zementis demo server on AWS at https://myadapa.zementis.com/adapaconsole/console.jsf and log in using your credentials you received earlier via email. In case you did not get your personal course credentials you can launch your own 14-days Zementis trial version [via the AWS marketplace here](https://aws.amazon.com/marketplace/pp/B00SNTAV54/ref=_ptnr_web) to complete all the exercises.
+Navigate to the Zementis demo server on AWS at https://myadapa.zementis.com/adapaconsole/console.jsf and log in using your credentials you received earlier via email. In case you did not get your personal course credentials you can launch your own 14-days Zementis trial version [via the AWS marketplace here](https://aws.amazon.com/marketplace/pp/B07FRBG344) to complete all the exercises.
 
 ```{r deploy-one-quiz}
 
